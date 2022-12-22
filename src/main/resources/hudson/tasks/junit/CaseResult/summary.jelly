@@ -34,15 +34,21 @@ THE SOFTWARE.
         <j:set var="open" value="javascript:showFailureSummary('${id}')"/>
         <j:set var="close" value="javascript:hideFailureSummary('${id}')"/>
         <h4>
-          <a id="${id}-showlink" href="${open}" title="Show ${title}" style="display: ${idisplay}">
-            <l:icon src="symbol-add-outline plugin-ionicons-api" class="icon-sm"/><st:nbsp/>${title}
-          </a>
-          <a id="${id}-hidelink" href="${close}" title="Hide ${title}" style="display: ${display}">
-            <l:icon src="symbol-remove-outline plugin-ionicons-api" class="icon-sm"/><st:nbsp/>${title}
-          </a>
+<!--          <a id="${id}-showlink" href="${open}" tooltip="Show ${title}" style="display: ${idisplay}">-->
+<!--            <l:icon src="symbol-add-outline plugin-ionicons-api" class="icon-sm"/><st:nbsp/>${title}-->
+<!--          </a>-->
+<!--          <a id="${id}-hidelink" href="${close}" tooltip="Hide ${title}" style="display: ${display}">-->
+<!--            <l:icon src="symbol-remove-outline plugin-ionicons-api" class="icon-sm"/><st:nbsp/>-->
+<!--          </a>-->
+          ${title}
         </h4>
-        <pre id="${id}" style="display: ${display}">
-          <st:out value="${value}"/>
+        <pre id="${id}">
+          <j:set var="lines" value="${value.split('\n')}" />
+          <j:forEach items="${lines}" var="line">
+            <span>
+              <span>${line}</span>
+            </span>
+          </j:forEach>
         </pre>
       </j:if>
     </d:tag>
@@ -54,8 +60,8 @@ THE SOFTWARE.
 
   <j:set var="id" value="${h.generateId()}"/>
 
-  <local:item id="${id}" name="error" title="${%Error Details}" value="${it.errorDetails}" opened="true"/>
-  <local:item id="${id}" name="stacktrace" title="${%Stack Trace}" value="${it.errorStackTrace}"/>
-  <local:item id="${id}" name="stdout" title="${%Standard Output}" value="${it.stdout}"/>
-  <local:item id="${id}" name="stderr" title="${%Standard Error}" value="${it.stderr}"/>
+  <local:item id="${id}" name="error" title="${%Error Details}" value="${it.errorDetails}" opened="true" />
+  <local:item id="${id}" name="stacktrace" title="${%Stack Trace}" value="${it.errorStackTrace}" opened="true" />
+  <local:item id="${id}" name="stdout" title="${%Standard Output}" value="${it.stdout}" opened="true" />
+  <local:item id="${id}" name="stderr" title="${%Standard Error}" value="${it.stderr}" opened="true" />
 </j:jelly>

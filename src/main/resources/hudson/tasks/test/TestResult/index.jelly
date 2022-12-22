@@ -23,23 +23,40 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:test="/lib/test">
-  <l:layout title="${it.run} ${it.displayName}">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
+  <l:layout title="${it.run} ${it.displayName}" type="one-column">
     <st:include page="sidepanel.jelly" />
+
     <l:main-panel>
-      <h1><st:out value="${it.title}" /></h1>
+      <style>
+        h1 {
+          white-space: nowrap;
+        }
+      </style>
+
+      <div class="jenkins-app-bar">
+        <div class="jenkins-app-bar__content" style="flex-direction: row; justify-content: start; gap: 1rem;">
+          <h1><st:out value="${it.title}" /></h1>
+          <h1 style="color: var(--text-color-secondary)">${it.getTotalCount()} ran</h1>
+        </div>
+        <div class="jenkins-app-bar__controls">
+          <h1 class="jenkins-!-success-color">${it.getPassCount()} passing</h1>
+          <h1 class="jenkins-!-destructive-color">${it.getFailCount()} failed</h1>
+          <h1 style="color: var(--text-color-secondary)">${it.getSkipCount()} skipped</h1>
+        </div>
+      </div>
 
       <j:set var="prev" value="${it.previousResult}" />
 
-      <test:bar />
+<!--      <test:bar />-->
 
-      <div style="text-align:right;">
-        <a href="history">
-          ${%took(it.durationString)}
-        </a>
-      </div>
+<!--      <div style="text-align:right;">-->
+<!--        <a href="history">-->
+<!--          ${%took(it.durationString)}-->
+<!--        </a>-->
+<!--      </div>-->
 
-      <t:editableDescription permission="${it.run.UPDATE}"/>
+<!--      <t:editableDescription permission="${it.run.UPDATE}"/>-->
 
       <table style="margin-top: 1em; margin-left:0em;">
 	  <j:forEach var="action" items="${it.testActions}">

@@ -35,46 +35,163 @@ THE SOFTWARE.
     </st:attribute>
   </st:documentation>
     <st:once>
-    <st:adjunct includes="lib.hudson.test.js.failureSummary" />
     <style type="text/css">
+
+      * {
+        -webkit-font-smoothing: subpixel-antialiased !important;
+      }
+
+      .cave2 {
+        display: flex;
+        flex-direction: column;
+        justify-items: stretch;
+        gap: 0.75rem;
+        border: 2px solid #eff3f8;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+      }
+
+      .anthrocene {
+        display: grid;
+        grid-template-columns: 1fr auto auto auto;
+        gap: 4rem;
+      }
+
+      .anthrocene_close {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--error-color) !important;
+      }
+
+      .anthrocene_close * {
+        stroke-width: 40px;
+      }
+
+      .anthrocene__label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: start;
+        color: var(--link-color);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+
+      .anthrocene__tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--text-color-secondary) !important;
+        text-decoration: none !important;
+      }
+
+      .anthrocene__tag svg {
+        width: 1rem;
+        height: 1rem;
+      }
+
+      .anthrocene__tag svg * {
+        stroke-width: 40px;
+      }
+
       .failure-summary {
-        margin-left: 2em;
+        background: black;
+        padding: calc(var(--section-padding) / 2);
+        border-radius: 10px;
       }
 
-      .failure-summary h4 {
-        margin: 0.5em 0 0.5em 0;
+      .jenkins-table tr td {
+        height: 2.75rem !important;
+        padding: 0 !important;
       }
 
-      .failure-summary h4 a {
-        text-decoration: none;
-        color: inherit;
+      .redi {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      .failure-summary h4 a img {
-        width: 8px;
-        height: 8px;
+      .red {
+        position: relative;
+        padding: 0 !important;
+        width: 2.75rem;
       }
 
-      .failure-summary pre {
-        margin-left: 2em;
+      .red::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--destructive-color);
+        opacity: 0.2;
+      }
+
+      .red svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        color: var(--destructive-color);
+      }
+
+      .red svg * {
+        stroke-width: 40px;
+      }
+
+      h4 {
+        font-weight: 700;
+        font-size: 1.125rem;
+        margin: 0 0 0.5rem 45px;
+        color: var(--text-color-secondary) !important;
+      }
+
+      pre {
+        counter-reset: line;
+        padding: 0;
+        background: transparent;
+        font-size: 0.9rem !important;
+        color: white !important;
+      }
+
+      pre > span {
+        position: relative;
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        align-items: start;
+        gap: 15px;
+        line-height: 1.4rem;
+      }
+
+      pre > span:before {
+        position: sticky;
+        top: 50px;
+        content: counter(line);
+        display: inline-block;
+        counter-increment: line;
+        color: var(--text-color-secondary);
+        text-align: right;
       }
     </style>
   </st:once>
-  <j:set var="id" value="${h.jsStringEscape(url)}"/>
-  <j:set var="open" value="showFailureSummary('test-${id}','${url}/summary')"/>
-  <j:set var="close" value="hideFailureSummary('test-${id}')"/>
-  <a id="test-${id}-showlink" onclick="${open}" title="${%Show details}">
-    <l:icon src="symbol-add-outline plugin-ionicons-api" class="icon-sm"/>
-  </a>
-  <a id="test-${id}-hidelink" onclick="${close}" title="${%Hide details}" style="display:none">
-    <l:icon src="symbol-remove-outline plugin-ionicons-api" class="icon-sm"/>
-  </a>
-  <st:nbsp/>
-  <a href="${url}"><st:out value="${result.fullDisplayName}"/></a>
+
+<!--  <st:adjunct includes="lib.hudson.test.js.failureSummary" />-->
+<!--  <j:set var="id" value="${h.jsStringEscape(url)}"/>-->
+<!--  <j:set var="open" value="showFailureSummary('test-${id}','${url}/summary')"/>-->
+<!--  <j:set var="close" value="hideFailureSummary('test-${id}')"/>-->
+
+<!--  <a id="test-${id}-showlink" onclick="${open}" tooltip="${%Show details}">-->
+<!--    <l:icon src="symbol-add-outline plugin-ionicons-api" class="icon-sm"/>-->
+<!--  </a>-->
+<!--  <a id="test-${id}-hidelink" onclick="${close}" tooltip="${%Hide details}" style="display:none">-->
+<!--    <l:icon src="symbol-remove-outline plugin-ionicons-api" class="icon-sm"/>-->
+<!--  </a>-->
+
+<!--  <a href="${url}"><st:out value="${result.fullDisplayName}"/></a>-->
   <j:forEach var="badge" items="${result.testActions}">
     <st:include it="${badge}" page="badge.jelly" optional="true"/>
   </j:forEach>
-  <div id="test-${id}" class="failure-summary" style="display: none;">
-    ${%Loading...}
+  <div id="test-${id}" class="failure-summary" style="display: none">
+    <l:spinner />
   </div>
 </j:jelly>

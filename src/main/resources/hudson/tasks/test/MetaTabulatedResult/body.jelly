@@ -24,29 +24,50 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:t="/lib/hudson/test">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:t="/lib/hudson/test" xmlns:l="/lib/layout">
   <j:if test="${it.failCount!=0}">
     <h2>${%All Failed Tests}</h2>
-    <table class="jenkins-table sortable">
-      <thead>
-        <tr>
-          <th class="pane-header">${%Test Name}</th>
-          <th class="pane-header" style="width:4em">${%Duration}</th>
-          <th class="pane-header" style="width:3em">${%Age}</th>
-        </tr>
-      </thead>
-      <j:forEach var="f" items="${it.failedTests}" varStatus="i">
-        <tr>
-          <td class="pane no-wrap"><t:failed-test result="${f}" url="${f.getRelativePathFrom(it)}"/></td>
-          <td class="pane no-wrap" style="text-align:right;" data="${f.duration}">
-            ${f.durationString}
-          </td>
-          <td class="pane" style="text-align:right;">
-            <a href="${rootURL}/${f.failedSinceRun.url}">${f.age}</a>
-          </td>
-        </tr>
+    <j:forEach var="f" items="${it.failedTests}" varStatus="i">
+        <st:adjunct includes="lib.hudson.test.js.failureSummary" />
+        <j:set var="url" value="${f.getRelativePathFrom(it)}"/>
+        <j:set var="id" value="${h.jsStringEscape(url)}"/>
+        <j:set var="open" value="showFailureSummary('test-${id}','${url}/summary')"/>
+        <j:set var="close" value="hideFailureSummary('test-${id}')"/>
+
+        <div class="cave2">
+          <div class="anthrocene">
+            <a class="anthrocene__label" id="test-${id}-showlink" onclick="${open}">
+              <l:icon src="symbol-close-circle-outline plugin-ionicons-api" class="anthrocene_close" />
+              ${f.fullDisplayName}
+            </a>
+
+            <a class="anthrocene__label" id="test-${id}-hidelink" onclick="${close}" style="display:none">
+              <l:icon src="symbol-close-circle-outline plugin-ionicons-api" class="anthrocene_close" />
+              ${f.fullDisplayName}
+            </a>
+
+            <a tooltip="Failing since ${f.failedSinceRun.displayName}"
+               href="${rootURL}/${f.failedSinceRun.url}"
+               class="anthrocene__tag">
+              <l:icon src="symbol-flame-outline plugin-ionicons-api" />
+              ${f.failedSinceRun.displayName}
+            </a>
+
+            <div tooltip="Took ${f.durationString} to run" class="anthrocene__tag">
+              <l:icon src="symbol-timer-outline plugin-ionicons-api" />
+              ${f.durationString}
+            </div>
+
+            <a tooltip="Open test in new tab"
+               href="${url}"
+               class="anthrocene__tag">
+              <l:icon src="symbol-open-outline plugin-ionicons-api" />
+            </a>
+          </div>
+
+          <t:failed-test result="${f}" url="${f.getRelativePathFrom(it)}"/>
+        </div>
       </j:forEach>
-    </table>
   </j:if>
 
   <j:if test="${it.totalCount!=0}">
@@ -54,16 +75,16 @@ THE SOFTWARE.
     <table class="jenkins-table sortable" id="testresult">
       <thead>
         <tr>
-          <th class="pane-header">${it.childTitle}</th>
-          <th class="pane-header" style="width:5em; text-align:right">${%Duration}</th>
-          <th class="pane-header" style="width:5em; text-align:right">${%Fail}</th>
-          <th class="pane-header" style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
-          <th class="pane-header" style="width:5em; text-align:right">${%Skip}</th>
-          <th class="pane-header" style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
-          <th class="pane-header" style="width:5em; text-align:right">${%Pass}</th>
-          <th class="pane-header" style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
-          <th class="pane-header" style="width:5em; text-align:right">${%Total}</th>
-          <th class="pane-header" style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
+          <th>${it.childTitle}</th>
+          <th style="width:5em; text-align:right">${%Duration}</th>
+          <th style="width:5em; text-align:right">${%Fail}</th>
+          <th style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
+          <th style="width:5em; text-align:right">${%Skip}</th>
+          <th style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
+          <th style="width:5em; text-align:right">${%Pass}</th>
+          <th style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
+          <th style="width:5em; text-align:right">${%Total}</th>
+          <th style="width:3em; text-align:right; white-space:nowrap;">(${%diff})</th>
         </tr>
       </thead>
       <tbody>
