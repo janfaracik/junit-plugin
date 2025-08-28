@@ -1,5 +1,7 @@
 target/
 work/
+node/
+node_modules/
 
 # IntelliJ project files 
 *.iml
