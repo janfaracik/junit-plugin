@@ -41,19 +41,19 @@ THE SOFTWARE.
         <div class="jp-details">
           <div class="jp-pills">
             <j:if test="${it.failCount gt 0}">
-              <div class="jp-pill jenkins-!-error-color" tooltip="${it.failCount} failing">
+              <div class="jp-pill jenkins-!-error-color" tooltip="${it.formatWithCommas(it.failCount)} failing">
                 <l:icon src="symbol-close-outline plugin-ionicons-api" />
                 ${it.formatWithCommas(it.failCount)}
               </div>
             </j:if>
             <j:if test="${it.skipCount gt 0}">
-              <div class="jp-pill jenkins-!-skipped-color" tooltip="${it.skipCount} skipped">
+              <div class="jp-pill jenkins-!-skipped-color" tooltip="${it.formatWithCommas(it.skipCount)} skipped">
                 <l:icon src="symbol-play-skip-forward-outline plugin-ionicons-api" />
                 ${it.formatWithCommas(it.skipCount)}
               </div>
             </j:if>
             <j:if test="${it.passCount gt 0}">
-              <div class="jp-pill jenkins-!-success-color" tooltip="${it.passCount} passing">
+              <div class="jp-pill jenkins-!-success-color" tooltip="${it.formatWithCommas(it.passCount)} passing">
                 <l:icon src="symbol-checkmark-outline plugin-ionicons-api" />
                 ${it.formatWithCommas(it.passCount)}
               </div>
@@ -65,7 +65,7 @@ THE SOFTWARE.
               <j:if test="${it.passCount gt prev.passCount}">
                 <a href="history"
                    class="jp-pill jenkins-!-success-color"
-                   tooltip="${it.passCount - prev.passCount} more passing than ${prev.run.displayName}">
+                   tooltip="${it.formatWithCommas(it.passCount - prev.passCount)} more passing than ${prev.run.displayName}">
                   <l:icon src="symbol-trending-up-outline plugin-ionicons-api" />
                   ${it.formatWithCommas(it.passCount - prev.passCount)}
                 </a>
@@ -74,7 +74,7 @@ THE SOFTWARE.
               <j:if test="${it.failCount gt prev.failCount}">
                 <a href="history"
                    class="jp-pill jenkins-!-error-color"
-                   tooltip="${it.failCount - prev.failCount} more failing than ${prev.run.displayName}">
+                   tooltip="${it.formatWithCommas(it.failCount - prev.failCount)} more failing than ${prev.run.displayName}">
                   <l:icon src="symbol-trending-down-outline plugin-ionicons-api" />
                   ${it.formatWithCommas(it.failCount - prev.failCount)}
                 </a>
