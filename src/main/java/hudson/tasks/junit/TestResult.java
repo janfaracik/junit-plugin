@@ -1252,4 +1252,19 @@ public final class TestResult extends MetaTabulatedResult {
     public PrismConfiguration getPrismConfiguration() {
         return PrismConfiguration.getInstance();
     }
+
+    @Restricted(NoExternalUse.class)
+    public static String formatWithCommas(long n) {
+        java.text.DecimalFormat fmt = new java.text.DecimalFormat("#,##0");
+        return fmt.format(n);
+    }
+
+    @Restricted(NoExternalUse.class)
+    public static String getDiffString(long i) {
+        if (i == 0) {
+            return "";
+        } else {
+            return i > 0 ? "+" + formatWithCommas(i) : formatWithCommas(i);
+        }
+    }
 }

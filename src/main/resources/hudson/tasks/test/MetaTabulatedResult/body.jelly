@@ -64,27 +64,27 @@ THE SOFTWARE.
               </j:forEach>
             </td>
             <td>
-              <span class="${p.failCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${p.failCount}</span>
+              <span class="${p.failCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${it.formatWithCommas(p.failCount)}</span>
               <span class="jp-pill jenkins-!-margin-left-1">
-                ${h.getDiffString2(p.failCount-prev.failCount)}
+                ${it.getDiffString(p.failCount-prev.failCount)}
               </span>
             </td>
             <td>
-              <span class="${p.skipCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${p.skipCount}</span>
+              <span class="${p.skipCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${it.formatWithCommas(p.skipCount)}</span>
               <span class="jp-pill jenkins-!-margin-left-1">
-                ${h.getDiffString2(p.skipCount-prev.skipCount)}
+                ${it.getDiffString(p.skipCount-prev.skipCount)}
               </span>
             </td>
             <td>
-              <span class="${p.passCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${p.passCount}</span>
+              <span class="${p.passCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${it.formatWithCommas(p.passCount)}</span>
               <span class="jp-pill jenkins-!-margin-left-1">
-                ${h.getDiffString2(p.passCount-prev.passCount)}
+                ${it.getDiffString(p.passCount-prev.passCount)}
               </span>
             </td>
             <td>
-              ${p.totalCount}
+              ${it.formatWithCommas(p.totalCount)}
               <span class="jp-pill jenkins-!-margin-left-1">
-                ${h.getDiffString2(p.totalCount-prev.totalCount)}
+                ${it.getDiffString(p.totalCount-prev.totalCount)}
               </span>
             </td>
             <j:forEach var="tablerow" items="${p.testActions}">
