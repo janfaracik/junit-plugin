@@ -23,7 +23,7 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:local="local" xmlns:l="/lib/layout">
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:local="local" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
     <d:taglib uri="local">
         <d:tag name="item">
             <j:if test="${value!=null and !empty value}">
@@ -37,7 +37,7 @@ THE SOFTWARE.
 
                         <pre class="jdl-component-code__code">
                             <code class="language-javastacktrace">
-                                ${value}
+                                ${value.trim()}
                             </code>
                         </pre>
                     </details>
@@ -47,6 +47,9 @@ THE SOFTWARE.
     </d:taglib>
 
     <local:item id="${id}" name="error" title="${%Error Details}" value="${it.errorDetails}" />
+    <j:forEach var="action" items="${it.testActions}">
+        <st:include page="summary.jelly" from="${action}" optional="true" it="${action}" />
+    </j:forEach>
     <j:forEach var="p" items="${it.properties}">
         <local:item id="${id}" name="${p.key}" title="${p.key}" value="${p.value}" />
     </j:forEach>

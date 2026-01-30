@@ -102,12 +102,6 @@ THE SOFTWARE.
 
     <t:editableDescription permission="${it.run.UPDATE}" hideButton="true" />
 
-    <table>
-      <j:forEach var="action" items="${it.testActions}">
-        <st:include page="summary.jelly" from="${action}" optional="true" it="${action}" />
-      </j:forEach>
-    </table>
-
     <div class="jp-code-list">
       <st:include page="test-output.jelly" />
     </div>
