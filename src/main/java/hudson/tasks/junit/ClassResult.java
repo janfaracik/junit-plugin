@@ -27,7 +27,9 @@ import hudson.model.Run;
 import hudson.tasks.test.TabulatedResult;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.kohsuke.stapler.StaplerRequest2;
@@ -154,6 +156,17 @@ public final class ClassResult extends TabulatedResult implements Comparable<Cla
     @Override
     public Collection<CaseResult> getChildren() {
         return cases;
+    }
+
+    @Override
+    public List<CaseResult> getFailedTests() {
+        List<CaseResult> failedTests = new ArrayList<>();
+        for (CaseResult test : cases) {
+            if (test.isFailed()) {
+                failedTests.add(test);
+            }
+        }
+        return failedTests;
     }
 
     @Override

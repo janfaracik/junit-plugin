@@ -27,7 +27,30 @@ THE SOFTWARE.
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:t="/lib/hudson/test" xmlns:f="/lib/form">
   <j:if test="${it.failCount!=0}">
 <!--    <f:section title="${%All Failed Tests}">-->
-      <t:taskList items="${it.failedTests}" id="tasks" />
+      <div id="tasks">
+        <j:choose>
+          <j:when test="${it.childType eq 'package'}">
+            <j:forEach var="p" items="${it.children}">
+              <j:if test="${p.failCount!=0}">
+                <j:forEach var="c" items="${p.children}">
+                  <j:if test="${c.failCount!=0}">
+                    <summary class="jenkins-side-nav__heading">
+                      <j:choose>
+                        <j:when test="${empty p.displayName}">(default package).${c.displayName}</j:when>
+                        <j:otherwise>${p.displayName}.${c.displayName}</j:otherwise>
+                      </j:choose>
+                    </summary>
+                    <t:taskList items="${c.failedTests}" relativeParent="${it}" />
+                  </j:if>
+                </j:forEach>
+              </j:if>
+            </j:forEach>
+          </j:when>
+          <j:otherwise>
+            <t:taskList items="${it.failedTests}" />
+          </j:otherwise>
+        </j:choose>
+      </div>
 <!--    </f:section>-->
   </j:if>
 

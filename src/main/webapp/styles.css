@@ -259,11 +259,6 @@ a.jp-table-row {
   padding: 0 !important;
 }
 
-.jenkins-details {
-  margin-top: -0.5rem;
-  margin-bottom: var(--section-padding);
-}
-
 /* Custom */
 
 .jp-test-split-view {
