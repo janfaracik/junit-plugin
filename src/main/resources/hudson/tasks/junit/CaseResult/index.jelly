@@ -33,6 +33,8 @@ THE SOFTWARE.
     <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
 
     <j:set var="st" value="${it.status}" />
+    <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
+    <j:set var="copyClassAndTestName" value="${it.copyClassAndTestName}" />
 
     <div class="jenkins-app-bar jenkins-app-bar--with-icon">
       <div class="jenkins-app-bar__content">
@@ -45,6 +47,11 @@ THE SOFTWARE.
           <span class="jenkins-!-text-color-secondary" style="font-family: var(--font-family-mono)">
             ${it.className}
           </span>
+
+          <j:if test="${!empty copyClassAndTestName}">
+            <l:copyButton text="${copyClassAndTestName}"
+                          iconOnly="true" />
+          </j:if>
         </h1>
       </div>
       <div class="jenkins-app-bar__controls">
@@ -88,6 +95,13 @@ THE SOFTWARE.
               (from <st:out value="${it.suiteResult.name}"/>)
             </j:if>
           </div>
+
+          <j:if test="${!empty copyAsPrompt}">
+            <l:copyButton text="${copyAsPrompt}"
+                          label="${%copyAsPrompt}"
+                          message="${%copyAsPromptMessage}"
+                          clazz="jenkins-details__button" />
+          </j:if>
 
           <a tooltip="${%History}"
              href="history"
