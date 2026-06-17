@@ -76,7 +76,10 @@ THE SOFTWARE.
                 </span>
 
                 <j:if test="${!empty copyClassAndTestName}">
-                    <l:copyButton text="${copyClassAndTestName}" clazz="squarecopy" iconOnly="true" />
+                    <l:copyButton text="${copyClassAndTestName}"
+                                  clazz="squarecopy"
+                                  iconOnly="true"
+                                  tooltip="Copy ${it.className}#${it.displayName}" />
                 </j:if>
             </h1>
         </div>
