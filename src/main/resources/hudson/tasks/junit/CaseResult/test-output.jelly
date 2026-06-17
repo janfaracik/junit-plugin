@@ -85,13 +85,9 @@ THE SOFTWARE.
         </div>
         <div class="jenkins-app-bar__controls">
             <j:if test="${!empty copyAsPrompt}">
-<!--                <l:copyButton text="${copyAsPrompt}"-->
-<!--                              label="${%copyAsPrompt}"-->
-<!--                              message="${%copyAsPromptMessage}" />-->
-                <button class="jenkins-button">
-                    <l:icon src="symbol-sparkles-outline plugin-ionicons-api" />
-                    Copy as prompt
-                </button>
+                <l:copyAsPromptButton text="${copyAsPrompt}"
+                                     label="${%copyAsPrompt}"
+                                     message="${%copyAsPromptMessage}" />
             </j:if>
             <a tooltip="${%History}"
                href="history"

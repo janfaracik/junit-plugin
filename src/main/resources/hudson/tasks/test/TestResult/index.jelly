@@ -131,5 +131,6 @@ THE SOFTWARE.
 <!--        <st:include page="body.jelly" />-->
 <!--      </j:otherwise>-->
 <!--    </j:choose>-->
+    <st:adjunct includes="lib.layout.copyButton.copyButton"/>
   </l:run-subpage>
 </j:jelly>
