@@ -166,7 +166,7 @@ a.jp-table-row {
 }
 
 .jp-code-list--inline {
-  padding: 0.5rem 0.5rem 0.5rem 2.25rem;
+  /*padding: 0.5rem 0.5rem 0.5rem 2.25rem;*/
   gap: var(--section-padding);
 
   .jp-code-card {
@@ -238,6 +238,56 @@ a.jp-table-row {
 /* Remove the fixed height from the table foldout */
 .failure-summary {
   height: unset !important;
+}
+
+.jp-test-split-view {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--section-padding);
+  align-items: start;
+  margin-right: calc(var(--section-padding) * -1);
+  margin-bottom: calc(var(--section-padding) * -1);
+}
+
+.jp-test-split-view__table {
+  height: 870px;
+  overflow-y: auto;
+}
+
+.jp-test-split-view__table,
+.jp-test-split-view__detail {
+  min-width: 0;
+}
+
+.jp-test-split-view__detail {
+  height: 870px;
+  border-left: var(--jenkins-border);
+  overflow-y: auto;
+  padding: 0 calc(var(--section-padding) * 2) calc(var(--section-padding) * 2) calc(var(--section-padding) * 2);
+}
+
+.jp-test-split-view__detail-content {
+  min-height: 70vh;
+}
+
+.jp-test-split-view__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--section-padding);
+  color: var(--text-color-secondary);
+  height: 100%;
+}
+
+@media (width <= 1200px) {
+  .jp-test-split-view {
+    grid-template-columns: 1fr;
+  }
+
+  .jp-test-split-view__detail,
+  .jp-test-split-view__detail-content {
+    min-height: 50vh;
+  }
 }
 
 /* Notice needs to have overflow hidden to contain the confetti canvas */

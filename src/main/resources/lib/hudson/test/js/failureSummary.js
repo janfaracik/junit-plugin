@@ -13,9 +13,17 @@ function initializeShowHideLinks() {
                 return;
             }
 
+            let link = e.currentTarget;
+            const splitView = document.getElementById("junit-test-details");
+
+            if (splitView) {
+                e.preventDefault();
+                showTestDetails(link, splitView);
+                return;
+            }
+
             e.preventDefault();
 
-            let link = e.currentTarget;
             const id = link.id.replace(/-showlink$/, '');
             link.classList.toggle("active")
 
@@ -34,7 +42,7 @@ function initializeShowHideLinks() {
                 table.insertBefore(nextRow, tableRow.nextSibling);
 
                 const summaryUrl = new URL(`${id.replace(PREFIX, '')}summary`, document.URL);
-                showSummary(td, summaryUrl);
+                loadContent(td, summaryUrl);
             } else {
                 nextRow.remove();
             }
@@ -44,15 +52,30 @@ function initializeShowHideLinks() {
     });
 }
 
-function showSummary(element, query) {
+function showTestDetails(link, element) {
+    document.querySelectorAll('[id$="-showlink"].active').forEach(activeLink => {
+        activeLink.classList.remove("active");
+    });
+
+    link.classList.add("active");
+    element.textContent = "Loading";
+
+    const id = link.id.replace(/-showlink$/, '');
+    const summaryUrl = new URL(`${id.replace(PREFIX, '')}summary`, document.URL);
+    loadContent(element, summaryUrl);
+}
+
+function loadContent(element, query) {
+    const cacheKey = query.toString();
+
     function setInnerHTML() {
-        element.innerHTML = CACHE[query];
+        element.innerHTML = CACHE[cacheKey];
         element.querySelectorAll("code").forEach(code => {
             Prism.highlightElement(code);
         })
     }
 
-    if (CACHE[query]) {
+    if (CACHE[cacheKey]) {
         setInnerHTML();
         return;
     }
@@ -60,7 +83,11 @@ function showSummary(element, query) {
     let rqo = new XMLHttpRequest();
     rqo.open('GET', query, true);
     rqo.onreadystatechange = function() {
-        CACHE[query] = rqo.responseText;
+        if (rqo.readyState !== XMLHttpRequest.DONE) {
+            return;
+        }
+
+        CACHE[cacheKey] = rqo.responseText;
         setInnerHTML();
     }
     rqo.send(null);

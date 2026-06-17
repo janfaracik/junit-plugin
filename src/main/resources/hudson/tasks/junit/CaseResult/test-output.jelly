@@ -23,7 +23,7 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:local="local" xmlns:l="/lib/layout">
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:local="local" xmlns:l="/lib/layout" xmlns:p="/prism" xmlns:t="/lib/hudson/test" xmlns:st="jelly:stapler">
     <d:taglib uri="local">
         <d:tag name="item">
             <j:if test="${value!=null and !empty value}">
@@ -56,12 +56,117 @@ THE SOFTWARE.
         </d:tag>
     </d:taglib>
 
-    <local:item id="${id}" name="error" title="${%Error Details}" value="${it.errorDetails}" />
-    <local:item id="${id}" name="skipmessage" title="${%Skip Message}" value="${it.skippedMessage}" />
-    <j:forEach var="p" items="${it.properties}">
-        <local:item id="${id}" name="${p.key}" title="${p.key}" value="${p.value}" link="${it.isUrlValue(p.value)}" />
-    </j:forEach>
-    <local:item id="${id}" name="stacktrace" title="${%Stack Trace}" value="${it.errorStackTrace}" />
-    <local:item id="${id}" name="stdout" title="${%Standard Output}" value="${it.stdout}" />
-    <local:item id="${id}" name="stderr" title="${%Standard Error}" value="${it.stderr}" />
+    <h1>${test}</h1>
+
+<!--    <j:set var="it" value="${test}" />-->
+    <p:prism configuration="${it.prismConfiguration}" />
+    <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
+
+    <j:set var="st" value="${it.status}" />
+    <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
+    <j:set var="copyClassAndTestName" value="${it.copyClassAndTestName}" />
+
+    <div class="jenkins-app-bar jenkins-app-bar--with-icon">
+        <div class="jenkins-app-bar__content">
+            <l:icon src="${it.iconFileName}" />
+            <h1>
+                <span class="jenkins-!-margin-right-2">
+                    ${it.displayName}
+                </span>
+                <st:nbsp />
+                <span class="jenkins-!-text-color-secondary" style="font-family: var(--font-family-mono)">
+                    ${it.className}
+                </span>
+
+                <j:if test="${!empty copyClassAndTestName}">
+                    <l:copyButton text="${copyClassAndTestName}"
+                                  iconOnly="true" />
+                </j:if>
+            </h1>
+        </div>
+        <div class="jenkins-app-bar__controls">
+            <div class="jenkins-details">
+                <t:condition-tag test="${it}" />
+
+                <j:if test="${!it.passed}">
+                    <a href="${rootURL}/${it.run.url}" class="jenkins-details__item">
+                        <div class="jenkins-details__item__icon">
+                            <j:choose>
+                                <j:when test="${it.skipped}">
+                                    <l:icon src="symbol-play-skip-forward-circle-outline plugin-ionicons-api" />
+                                </j:when>
+                                <j:otherwise>
+                                    <l:icon src="symbol-close-circle-outline plugin-ionicons-api" />
+                                </j:otherwise>
+                            </j:choose>
+                        </div>
+
+                        <j:choose>
+                            <j:when test="${it.skipped}">
+                                ${%skippedFor(it.age)}
+                            </j:when>
+                            <j:otherwise>
+                                ${%failingFor(it.age)}
+                            </j:otherwise>
+                        </j:choose>
+                        ${%since.before}
+                        #${it.failedSince}
+                        ${%since.after}
+                    </a>
+                </j:if>
+
+                <div class="jenkins-details__item">
+                    <div class="jenkins-details__item__icon">
+                        <l:icon src="symbol-timer-outline plugin-ionicons-api" />
+                    </div>
+                    ${%took(it.durationString)}
+
+                    <j:if test="${it.suiteResult != null &amp;&amp; it.className != it.suiteResult.name}">
+                        (from <st:out value="${it.suiteResult.name}"/>)
+                    </j:if>
+                </div>
+
+                <j:if test="${!empty copyAsPrompt}">
+                    <l:copyButton text="${copyAsPrompt}"
+                                  label="${%copyAsPrompt}"
+                                  message="${%copyAsPromptMessage}"
+                                  clazz="jenkins-details__button" />
+                </j:if>
+
+                <j:if test="${!empty copyClassAndTestName}">
+                    <l:copyButton text="${copyClassAndTestName}"
+                                  label="${%copyClassAndTestName}"
+                                  message="${%copyClassAndTestNameMessage}"
+                                  clazz="jenkins-details__button" />
+                </j:if>
+
+                <a tooltip="${%History}"
+                   href="history"
+                   class="jenkins-button jenkins-details__button">
+                    <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
+                </a>
+
+                <t:editDescriptionButton permission="${it.run.UPDATE}" compact="true" />
+            </div>
+        </div>
+    </div>
+
+    <t:editableDescription permission="${it.run.UPDATE}" hideButton="true" />
+
+    <table>
+        <j:forEach var="action" items="${it.testActions}">
+            <st:include page="summary.jelly" from="${action}" optional="true" it="${action}" />
+        </j:forEach>
+    </table>
+
+    <div class="jp-code-list jp-code-list--inline">
+        <local:item id="${id}" name="error" title="${%Error Details}" value="${it.errorDetails}" />
+        <local:item id="${id}" name="skipmessage" title="${%Skip Message}" value="${it.skippedMessage}" />
+        <j:forEach var="p" items="${it.properties}">
+            <local:item id="${id}" name="${p.key}" title="${p.key}" value="${p.value}" link="${it.isUrlValue(p.value)}" />
+        </j:forEach>
+        <local:item id="${id}" name="stacktrace" title="${%Stack Trace}" value="${it.errorStackTrace}" />
+        <local:item id="${id}" name="stdout" title="${%Standard Output}" value="${it.stdout}" />
+        <local:item id="${id}" name="stderr" title="${%Standard Error}" value="${it.stderr}" />
+    </div>
 </j:jelly>
