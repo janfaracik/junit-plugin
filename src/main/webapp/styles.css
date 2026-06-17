@@ -210,7 +210,7 @@ a.jp-table-row {
         .jenkins-copy-button {
           padding: 0;
           min-width: 2.375rem;
-          margin: -1rem -0.75rem -1rem auto !important;
+          margin: -1rem 0 -1rem auto !important;
 
           &::before, &::after {
             display: none;
@@ -238,6 +238,15 @@ a.jp-table-row {
 /* Remove the fixed height from the table foldout */
 .failure-summary {
   height: unset !important;
+}
+
+.squarecopy {
+  aspect-ratio: 1;
+  padding: 0;
+
+  &:not(:hover) {
+    color: var(--text-color-secondary) !important;
+  }
 }
 
 .idk-bar {
@@ -283,7 +292,9 @@ a.jp-table-row {
 .jp-test-split-view__detail {
   border-left: 1.5px solid color-mix(in sRGB, var(--jenkins-border-color), transparent);
   overflow-y: auto;
-  padding: 0 calc(var(--section-padding) * 2) calc(var(--section-padding) * 2) calc(var(--section-padding) * 2);
+  padding: 0 calc(var(--section-padding) * 5) var(--section-padding) calc(var(--section-padding) * 5);
+  /*max-width: 1200px;*/
+  /*margin-inline: auto;*/
 }
 
 .jp-test-split-view__placeholder {
