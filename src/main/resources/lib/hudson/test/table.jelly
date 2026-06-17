@@ -53,7 +53,6 @@ THE SOFTWARE.
                 <j:forEach var="tableheader" items="${it.testActions}">
                     <st:include it="${tableheader}" page="casetableheader.jelly" optional="true" />
                 </j:forEach>
-                <th class="jenkins-mobile-hide" />
             </tr>
         </thead>
         <j:forEach var="f" items="${attrs.items}" varStatus="i">
@@ -64,36 +63,48 @@ THE SOFTWARE.
 
                     <j:choose>
                         <j:when test="${f.status == 'SKIPPED' and f.skippedMessage == null || f.skippedMessage.isEmpty()}">
-                            <div class="jp-table-row">
-                                <l:icon src="${f.iconFileName}" />
+                            <div class="task">
+                                <span class="task-link-wrapper">
+                                    <span class="task-link">
+                                        <span class="task-icon-link">
+                                            <l:icon src="${f.iconFileName}" />
+                                        </span>
+                                        <span class="task-link-text">
+                                            ${f.name}
 
-                                ${f.name}
+                                            <j:if test="${it.class.simpleName eq 'TestResult'}">
+                                                <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2" style="font-family: var(--font-family-mono)">
+                                                    <st:out value="${f.className}" />
+                                                </span>
+                                            </j:if>
 
-                                <j:if test="${it.class.simpleName eq 'TestResult'}">
-                                    <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2" style="font-family: var(--font-family-mono)">
-                                        <st:out value="${f.className}" />
+                                            <t:condition-tag test="${f}" clazz="jenkins-!-margin-left-2 jenkins-mobile-hide" />
+                                        </span>
                                     </span>
-                                </j:if>
-
-                                <t:condition-tag test="${f}" clazz="jenkins-!-margin-left-2 jenkins-mobile-hide" />
+                                </span>
                             </div>
                         </j:when>
                         <j:otherwise>
-                            <a id="test-${id}-showlink" class="jp-table-row" href="${url}">
-                                <l:icon src="${f.iconFileName}" />
+                            <div class="task">
+                                <span class="task-link-wrapper">
+                                    <a id="test-${id}-showlink" class="task-link" href="${url}">
+                                        <span class="task-icon-link">
+                                            <l:icon src="${f.iconFileName}" />
+                                        </span>
+                                        <span class="task-link-text">
+                                            ${f.name}
 
-                                ${f.name}
+                                            <j:if test="${it.class.simpleName eq 'TestResult'}">
+                                                <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2" style="font-family: var(--font-family-mono)">
+                                                    <st:out value="${f.className}" />
+                                                </span>
+                                            </j:if>
 
-                                <j:if test="${it.class.simpleName eq 'TestResult'}">
-                                    <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2" style="font-family: var(--font-family-mono)">
-                                        <st:out value="${f.className}" />
-                                    </span>
-                                </j:if>
-
-                                <t:condition-tag test="${f}" clazz="jenkins-!-margin-left-2 jenkins-mobile-hide" />
-
-                                <l:icon src="symbol-chevron-forward-outline plugin-ionicons-api" class="jenkins-!-margin-left-2" />
-                            </a>
+                                            <t:condition-tag test="${f}" clazz="jenkins-!-margin-left-2 jenkins-mobile-hide" />
+                                        </span>
+                                    </a>
+                                </span>
+                            </div>
                         </j:otherwise>
                     </j:choose>
 
@@ -115,13 +126,6 @@ THE SOFTWARE.
                 <j:forEach var="tablerow" items="${f.testActions}">
                     <st:include it="${tablerow}" page="tablerow.jelly" optional="true" />
                 </j:forEach>
-                <td class="jenkins-table__cell--tight jenkins-mobile-hide">
-                    <div class="jenkins-table__cell__button-wrapper">
-                        <a href="${url}" class="jenkins-button jenkins-button--tertiary" tooltip="Open in new tab" target="_blank">
-                            <l:icon src="symbol-external" class="icon-sm" />
-                        </a>
-                    </div>
-                </td>
             </tr>
         </j:forEach>
     </table>

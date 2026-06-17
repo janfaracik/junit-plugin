@@ -25,17 +25,8 @@ THE SOFTWARE.
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:t="/lib/hudson/test">
   <j:if test="${it.totalCount!=0}">
-    <div class="jp-test-split-view">
-      <div class="jp-test-split-view__table">
-        <f:section title="${%All Tests}">
-          <t:table items="${it.children}" id="testresult" />
-        </f:section>
-      </div>
-      <div class="jp-test-split-view__detail">
-        <div id="junit-test-details" class="jp-test-split-view__detail-content">
-          <div class="jp-test-split-view__placeholder">Select a test to view it here.</div>
-        </div>
-      </div>
-    </div>
+    <f:section title="${%All Tests}">
+      <t:table items="${it.children}" id="testresult" />
+    </f:section>
   </j:if>
 </j:jelly>

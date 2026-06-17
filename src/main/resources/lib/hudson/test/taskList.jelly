@@ -1,0 +1,108 @@
+<!--
+The MIT License
+
+Copyright (c) 2025 Jan Faracik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test">
+    <st:documentation>
+        <st:attribute name="items">
+            The tests to display inside of this task list.
+        </st:attribute>
+        <st:attribute name="baseUrl" use="optional">
+            Optional base URL for the task list.
+        </st:attribute>
+        <st:attribute name="relativeParent" use="optional">
+            Optional relative parent for the task URL.
+        </st:attribute>
+        <st:attribute name="id" use="optional">
+            Optional ID for the task list container.
+        </st:attribute>
+    </st:documentation>
+
+    <st:once>
+        <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
+        <st:adjunct includes="lib.hudson.test.js.failureSummary" />
+    </st:once>
+
+    <div id="${attrs.id}">
+        <j:forEach var="f" items="${attrs.items}">
+            <j:set var="url" value="${attrs.baseUrl}${f.getRelativePathFrom(attrs.relativeParent ?: it)}" />
+            <j:set var="id" value="${h.htmlAttributeEscape(url)}" />
+
+            <div class="task">
+                <span class="task-link-wrapper">
+                    <j:choose>
+                        <j:when test="${f.status == 'SKIPPED' and f.skippedMessage == null || f.skippedMessage.isEmpty()}">
+                            <span class="task-link">
+                                <span class="task-icon-link">
+                                    <l:icon src="${f.iconFileName}" />
+                                </span>
+                                <span class="task-link-text">
+                                    ${f.name}
+<!--                                    <j:if test="${it.class.simpleName eq 'TestResult'}">-->
+<!--                                        <br />-->
+<!--                                        <span class="jenkins-!-text-color-secondary" style="font-family: var(&#45;&#45;font-family-mono)">-->
+<!--                                            <st:out value="${f.className}" />-->
+<!--                                        </span>-->
+<!--                                    </j:if>-->
+                                </span>
+                            </span>
+                        </j:when>
+                        <j:otherwise>
+                            <a id="test-${id}-showlink" class="task-link task-link-no-confirm" href="${url}">
+                                <span class="task-icon-link">
+                                    <l:icon src="${f.iconFileName}" />
+                                </span>
+                                <span class="task-link-text">
+                                    ${f.name}
+<!--                                    <j:if test="${it.class.simpleName eq 'TestResult'}">-->
+<!--                                        <br />-->
+<!--                                        <span class="jenkins-!-text-color-secondary" style="font-family: var(&#45;&#45;font-family-mono)">-->
+<!--                                            <st:out value="${f.className}" />-->
+<!--                                        </span>-->
+<!--                                    </j:if>-->
+                                </span>
+                            </a>
+                        </j:otherwise>
+                    </j:choose>
+                </span>
+
+<!--                <div class="subtasks">-->
+<!--                    <t:condition-tag test="${f}" clazz="jenkins-!-margin-right-2" />-->
+<!--                    <span class="jenkins-!-text-color-secondary">-->
+<!--                        <j:choose>-->
+<!--                            <j:when test="${f.age == 0 or f.skipped}">0</j:when>-->
+<!--                            <j:otherwise>-->
+<!--                                <a href="${rootURL}/${f.failedSinceRun.url}">${f.age}</a>-->
+<!--                            </j:otherwise>-->
+<!--                        </j:choose>-->
+<!--                        <span class="jenkins-!-margin-left-1">${f.durationString}</span>-->
+<!--                    </span>-->
+<!--                    <j:forEach var="badge" items="${f.testActions}">-->
+<!--                        <st:include it="${badge}" page="badge.jelly" optional="true" />-->
+<!--                    </j:forEach>-->
+<!--                </div>-->
+            </div>
+        </j:forEach>
+    </div>
+</j:jelly>

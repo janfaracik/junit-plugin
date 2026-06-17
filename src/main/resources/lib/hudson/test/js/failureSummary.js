@@ -26,6 +26,7 @@ function initializeShowHideLinks() {
 
             const id = link.id.replace(/-showlink$/, '');
             link.classList.toggle("active")
+            link.classList.toggle("task-link--active")
 
             const table = link.closest("table tbody");
             const tableRow = link.closest("tr");
@@ -35,7 +36,7 @@ function initializeShowHideLinks() {
             if (nextRow == null || nextRow.dataset.type === 'test-row') {
                 const nextRow = document.createElement("tr");
                 const td = document.createElement("td");
-                td.colSpan = 10;
+                td.colSpan = tableRow.children.length;
                 td.textContent = "Loading";
                 nextRow.appendChild(td);
                 nextRow.dataset.type = "foldout-row";
@@ -53,11 +54,13 @@ function initializeShowHideLinks() {
 }
 
 function showTestDetails(link, element) {
-    document.querySelectorAll('[id$="-showlink"].active').forEach(activeLink => {
+    document.querySelectorAll('[id$="-showlink"].active, [id$="-showlink"].task-link--active').forEach(activeLink => {
         activeLink.classList.remove("active");
+        activeLink.classList.remove("task-link--active");
     });
 
     link.classList.add("active");
+    link.classList.add("task-link--active");
     element.textContent = "Loading";
 
     const id = link.id.replace(/-showlink$/, '');

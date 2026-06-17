@@ -66,89 +66,99 @@ THE SOFTWARE.
     <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
     <j:set var="copyClassAndTestName" value="${it.copyClassAndTestName}" />
 
-    <div class="jenkins-app-bar jenkins-app-bar--with-icon">
-        <div class="jenkins-app-bar__content">
-            <l:icon src="${it.iconFileName}" />
-            <h1>
-                <span class="jenkins-!-margin-right-2">
-                    ${it.displayName}
-                </span>
-                <st:nbsp />
-                <span class="jenkins-!-text-color-secondary" style="font-family: var(--font-family-mono)">
-                    ${it.className}
-                </span>
+<!--    <div class="jenkins-app-bar jenkins-app-bar&#45;&#45;with-icon">-->
+<!--        <div class="jenkins-app-bar__content">-->
+<!--            <l:icon src="${it.iconFileName}" />-->
+<!--            <h1>-->
+<!--                <span class="jenkins-!-margin-right-2">-->
+<!--                    ${it.displayName}-->
+<!--                </span>-->
+<!--                <st:nbsp />-->
+<!--                <span class="jenkins-!-text-color-secondary" style="font-family: var(&#45;&#45;font-family-mono)">-->
+<!--                    ${it.className}-->
+<!--                </span>-->
 
-                <j:if test="${!empty copyClassAndTestName}">
-                    <l:copyButton text="${copyClassAndTestName}"
-                                  iconOnly="true" />
-                </j:if>
-            </h1>
-        </div>
-        <div class="jenkins-app-bar__controls">
-            <div class="jenkins-details">
-                <t:condition-tag test="${it}" />
+<!--                <j:if test="${!empty copyClassAndTestName}">-->
+<!--                    <l:copyButton text="${copyClassAndTestName}"-->
+<!--                                  iconOnly="true" />-->
+<!--                </j:if>-->
+<!--            </h1>-->
+<!--        </div>-->
+<!--        <div class="jenkins-app-bar__controls">-->
+<!--            <div class="jenkins-details">-->
+<!--                <t:condition-tag test="${it}" />-->
 
-                <j:if test="${!it.passed}">
-                    <a href="${rootURL}/${it.run.url}" class="jenkins-details__item">
-                        <div class="jenkins-details__item__icon">
-                            <j:choose>
-                                <j:when test="${it.skipped}">
-                                    <l:icon src="symbol-play-skip-forward-circle-outline plugin-ionicons-api" />
-                                </j:when>
-                                <j:otherwise>
-                                    <l:icon src="symbol-close-circle-outline plugin-ionicons-api" />
-                                </j:otherwise>
-                            </j:choose>
-                        </div>
+<!--                <j:if test="${!it.passed}">-->
+<!--                    <a href="${rootURL}/${it.run.url}" class="jenkins-details__item">-->
+<!--                        <div class="jenkins-details__item__icon">-->
+<!--                            <j:choose>-->
+<!--                                <j:when test="${it.skipped}">-->
+<!--                                    <l:icon src="symbol-play-skip-forward-circle-outline plugin-ionicons-api" />-->
+<!--                                </j:when>-->
+<!--                                <j:otherwise>-->
+<!--                                    <l:icon src="symbol-close-circle-outline plugin-ionicons-api" />-->
+<!--                                </j:otherwise>-->
+<!--                            </j:choose>-->
+<!--                        </div>-->
 
-                        <j:choose>
-                            <j:when test="${it.skipped}">
-                                ${%skippedFor(it.age)}
-                            </j:when>
-                            <j:otherwise>
-                                ${%failingFor(it.age)}
-                            </j:otherwise>
-                        </j:choose>
-                        ${%since.before}
-                        #${it.failedSince}
-                        ${%since.after}
-                    </a>
-                </j:if>
+<!--                        <j:choose>-->
+<!--                            <j:when test="${it.skipped}">-->
+<!--                                ${%skippedFor(it.age)}-->
+<!--                            </j:when>-->
+<!--                            <j:otherwise>-->
+<!--                                ${%failingFor(it.age)}-->
+<!--                            </j:otherwise>-->
+<!--                        </j:choose>-->
+<!--                        ${%since.before}-->
+<!--                        #${it.failedSince}-->
+<!--                        ${%since.after}-->
+<!--                    </a>-->
+<!--                </j:if>-->
 
-                <div class="jenkins-details__item">
-                    <div class="jenkins-details__item__icon">
-                        <l:icon src="symbol-timer-outline plugin-ionicons-api" />
-                    </div>
-                    ${%took(it.durationString)}
+<!--                <div class="jenkins-details__item">-->
+<!--                    <div class="jenkins-details__item__icon">-->
+<!--                        <l:icon src="symbol-timer-outline plugin-ionicons-api" />-->
+<!--                    </div>-->
+<!--                    ${%took(it.durationString)}-->
 
-                    <j:if test="${it.suiteResult != null &amp;&amp; it.className != it.suiteResult.name}">
-                        (from <st:out value="${it.suiteResult.name}"/>)
-                    </j:if>
-                </div>
+<!--                    <j:if test="${it.suiteResult != null &amp;&amp; it.className != it.suiteResult.name}">-->
+<!--                        (from <st:out value="${it.suiteResult.name}"/>)-->
+<!--                    </j:if>-->
+<!--                </div>-->
 
-                <j:if test="${!empty copyAsPrompt}">
-                    <l:copyButton text="${copyAsPrompt}"
-                                  label="${%copyAsPrompt}"
-                                  message="${%copyAsPromptMessage}"
-                                  clazz="jenkins-details__button" />
-                </j:if>
+<!--                <j:if test="${!empty copyAsPrompt}">-->
+<!--                    <l:copyButton text="${copyAsPrompt}"-->
+<!--                                  label="${%copyAsPrompt}"-->
+<!--                                  message="${%copyAsPromptMessage}"-->
+<!--                                  clazz="jenkins-details__button" />-->
+<!--                </j:if>-->
 
-                <j:if test="${!empty copyClassAndTestName}">
-                    <l:copyButton text="${copyClassAndTestName}"
-                                  label="${%copyClassAndTestName}"
-                                  message="${%copyClassAndTestNameMessage}"
-                                  clazz="jenkins-details__button" />
-                </j:if>
+<!--                <j:if test="${!empty copyClassAndTestName}">-->
+<!--                    <l:copyButton text="${copyClassAndTestName}"-->
+<!--                                  label="${%copyClassAndTestName}"-->
+<!--                                  message="${%copyClassAndTestNameMessage}"-->
+<!--                                  clazz="jenkins-details__button" />-->
+<!--                </j:if>-->
 
-                <a tooltip="${%History}"
-                   href="history"
-                   class="jenkins-button jenkins-details__button">
-                    <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
-                </a>
+<!--                <a tooltip="${%History}"-->
+<!--                   href="history"-->
+<!--                   class="jenkins-button jenkins-details__button">-->
+<!--                    <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />-->
+<!--                </a>-->
 
-                <t:editDescriptionButton permission="${it.run.UPDATE}" compact="true" />
-            </div>
-        </div>
+<!--                <t:editDescriptionButton permission="${it.run.UPDATE}" compact="true" />-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="idk-bar">
+        <span>
+            ${it.className}
+        </span>
+        <span class="jenkins-visually-hidden">#</span>
+        <span class="jenkins-!-margin-left-1" style="font-weight: 500">
+            ${it.displayName}
+        </span>
     </div>
 
     <t:editableDescription permission="${it.run.UPDATE}" hideButton="true" />
