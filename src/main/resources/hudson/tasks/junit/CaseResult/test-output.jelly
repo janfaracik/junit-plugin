@@ -126,19 +126,6 @@ THE SOFTWARE.
 <!--                    </j:if>-->
 <!--                </div>-->
 
-<!--                <j:if test="${!empty copyAsPrompt}">-->
-<!--                    <l:copyButton text="${copyAsPrompt}"-->
-<!--                                  label="${%copyAsPrompt}"-->
-<!--                                  message="${%copyAsPromptMessage}"-->
-<!--                                  clazz="jenkins-details__button" />-->
-<!--                </j:if>-->
-
-<!--                <j:if test="${!empty copyClassAndTestName}">-->
-<!--                    <l:copyButton text="${copyClassAndTestName}"-->
-<!--                                  label="${%copyClassAndTestName}"-->
-<!--                                  message="${%copyClassAndTestNameMessage}"-->
-<!--                                  clazz="jenkins-details__button" />-->
-<!--                </j:if>-->
 
 <!--                <a tooltip="${%History}"-->
 <!--                   href="history"-->
@@ -160,6 +147,20 @@ THE SOFTWARE.
             ${it.displayName}
         </span>
     </div>
+
+    <j:if test="${!empty copyClassAndTestName}">
+        <l:copyButton text="${copyClassAndTestName}"
+                      label="${%copyClassAndTestName}"
+                      message="${%copyClassAndTestNameMessage}"
+                      clazz="jenkins-details__button" />
+    </j:if>
+
+    <j:if test="${!empty copyAsPrompt}">
+        <l:copyButton text="${copyAsPrompt}"
+                      label="${%copyAsPrompt}"
+                      message="${%copyAsPromptMessage}"
+                      clazz="jenkins-details__button" />
+    </j:if>
 
     <t:editableDescription permission="${it.run.UPDATE}" hideButton="true" />
 
