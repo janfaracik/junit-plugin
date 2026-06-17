@@ -76,6 +76,7 @@ function loadContent(element, query) {
         element.querySelectorAll("code").forEach(code => {
             Prism.highlightElement(code);
         })
+        Behaviour.applySubtree(element);
     }
 
     if (CACHE[cacheKey]) {

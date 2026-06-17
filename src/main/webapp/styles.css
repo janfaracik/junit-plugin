@@ -162,29 +162,13 @@ a.jp-table-row {
 .jp-code-list {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--section-padding) / 2);
-}
-
-.jp-code-list--inline {
-  /*padding: 0.5rem 0.5rem 0.5rem 2.25rem;*/
-  gap: var(--section-padding);
-
-  .jp-code-card {
-    background: unset;
-    border: unset;
-    border-radius: unset;
-    padding: unset;
-  }
+  gap: calc(var(--section-padding) * 1.5);
 }
 
 .jp-code-card {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  background: var(--card-background);
-  border: var(--jenkins-border);
-  border-radius: var(--form-input-border-radius);
-  padding: 0.875rem 1rem;
 
   details {
     summary {
