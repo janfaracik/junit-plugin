@@ -41,9 +41,7 @@ function loadContent(element, query) {
 
     function setInnerHTML() {
         element.innerHTML = CACHE[cacheKey];
-        element.querySelectorAll("code").forEach(code => {
-            Prism.highlightElement(code);
-        })
+        Prism.highlightAll();
         Behaviour.applySubtree(element);
     }
 
