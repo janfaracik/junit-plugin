@@ -196,8 +196,8 @@ a.jp-table-row {
           min-width: 2.375rem;
           margin: -1rem 0 -1rem auto !important;
 
-          &::before, &::after {
-            display: none;
+          &:not(:hover) {
+            color: var(--text-color-secondary) !important;
           }
         }
       }
@@ -233,19 +233,6 @@ a.jp-table-row {
   }
 }
 
-.idk-bar {
-  display: flex;
-  align-items: center;
-  font-family: var(--font-family-mono);
-  background: color-mix(in oklch, var(--success-color) 7.5%, transparent);
-  border: 1px solid color-mix(in oklch, var(--success-color) 17.5%, transparent);
-  border-radius: var(--form-input-border-radius);
-  padding: .125rem calc(1rem + var(--jenkins-border-width, 2px));
-  color: var(--success-color) !important;
-  height: 42px;
-  margin-bottom: var(--section-padding);
-}
-
 /* Overrides */
 
 .app-build-content {
@@ -256,11 +243,10 @@ a.jp-table-row {
 
 .jp-test-split-view {
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 450px 3fr;
   align-items: stretch;
-  /*fix this*/
-  height: 80vh;
   overflow: hidden;
+  height: 80vh;
 }
 
 .jp-test-split-view__table {

@@ -44,7 +44,6 @@ THE SOFTWARE.
         <st:adjunct includes="lib.hudson.test.js.failureSummary" />
     </st:once>
 
-    <div id="${attrs.id}">
         <j:forEach var="f" items="${attrs.items}">
             <j:set var="url" value="${attrs.baseUrl}${f.getRelativePathFrom(attrs.relativeParent ?: it)}" />
             <j:set var="id" value="${h.htmlAttributeEscape(url)}" />
@@ -59,12 +58,10 @@ THE SOFTWARE.
                                 </span>
                                 <span class="task-link-text">
                                     ${f.name}
-<!--                                    <j:if test="${it.class.simpleName eq 'TestResult'}">-->
-<!--                                        <br />-->
-<!--                                        <span class="jenkins-!-text-color-secondary" style="font-family: var(&#45;&#45;font-family-mono)">-->
-<!--                                            <st:out value="${f.className}" />-->
-<!--                                        </span>-->
-<!--                                    </j:if>-->
+                                    <span class="jenkins-!-text-color-secondary">
+                                        ${f.durationString}
+                                    </span>
+                                    <t:condition-tag test="${f}" />
                                 </span>
                             </span>
                         </j:when>
@@ -75,12 +72,10 @@ THE SOFTWARE.
                                 </span>
                                 <span class="task-link-text">
                                     ${f.name}
-<!--                                    <j:if test="${it.class.simpleName eq 'TestResult'}">-->
-<!--                                        <br />-->
-<!--                                        <span class="jenkins-!-text-color-secondary" style="font-family: var(&#45;&#45;font-family-mono)">-->
-<!--                                            <st:out value="${f.className}" />-->
-<!--                                        </span>-->
-<!--                                    </j:if>-->
+                                    <span class="jenkins-!-text-color-secondary">
+                                        ${f.durationString}
+                                    </span>
+                                    <t:condition-tag test="${f}" />
                                 </span>
                             </a>
                         </j:otherwise>
@@ -104,5 +99,4 @@ THE SOFTWARE.
 <!--                </div>-->
             </div>
         </j:forEach>
-    </div>
 </j:jelly>

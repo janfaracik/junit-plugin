@@ -16,39 +16,8 @@ function initializeShowHideLinks() {
             let link = e.currentTarget;
             const splitView = document.getElementById("junit-test-details");
 
-            if (splitView) {
-                e.preventDefault();
-                showTestDetails(link, splitView);
-                return;
-            }
-
             e.preventDefault();
-
-            const id = link.id.replace(/-showlink$/, '');
-            link.classList.toggle("active")
-            link.classList.toggle("task-link--active")
-
-            const table = link.closest("table tbody");
-            const tableRow = link.closest("tr");
-            let nextRow = tableRow.nextElementSibling;
-
-            // Create the row if it doesn't exist
-            if (nextRow == null || nextRow.dataset.type === 'test-row') {
-                const nextRow = document.createElement("tr");
-                const td = document.createElement("td");
-                td.colSpan = tableRow.children.length;
-                td.textContent = "Loading";
-                nextRow.appendChild(td);
-                nextRow.dataset.type = "foldout-row";
-                table.insertBefore(nextRow, tableRow.nextSibling);
-
-                const summaryUrl = new URL(`${id.replace(PREFIX, '')}summary`, document.URL);
-                loadContent(td, summaryUrl);
-            } else {
-                nextRow.remove();
-            }
-
-            tryEnableSortheader();
+            showTestDetails(link, splitView);
         });
     });
 }
@@ -61,7 +30,6 @@ function showTestDetails(link, element) {
 
     link.classList.add("active");
     link.classList.add("task-link--active");
-    element.textContent = "Loading";
 
     const id = link.id.replace(/-showlink$/, '');
     const summaryUrl = new URL(`${id.replace(PREFIX, '')}summary`, document.URL);
@@ -127,12 +95,4 @@ function tryShowConfetti() {
         setInterval(conf, 200);
         conf();
     }
-}
-
-function tryEnableSortheader() {
-    const hasFoldouts = document.querySelectorAll("[data-type='foldout-row']").length > 0;
-
-    document.querySelectorAll(".sortheader").forEach(link => {
-        link.style.pointerEvents = hasFoldouts ? "none" : "unset";
-    })
 }

@@ -34,7 +34,7 @@ THE SOFTWARE.
     </st:documentation>
 
     <j:if test="${attrs.test.condition != null}">
-        <span class="jp-pill ${attrs.test.condition.cssClass} ${attrs.clazz}">
+        <span class="jenkins-badge ${attrs.test.condition.cssClass} ${attrs.clazz} task-icon-badge">
             ${attrs.test.condition.message}
         </span>
     </j:if>
