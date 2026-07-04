@@ -62,7 +62,6 @@ THE SOFTWARE.
 
     <j:set var="st" value="${it.status}" />
     <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
-    <j:set var="copyClassAndTestName" value="${it.copyClassAndTestName}" />
 
     <div class="jenkins-app-bar jenkins-app-bar--with-icon">
         <div class="jenkins-app-bar__content">
@@ -75,12 +74,10 @@ THE SOFTWARE.
                     ${it.className}
                 </span>
 
-                <j:if test="${!empty copyClassAndTestName}">
-                    <l:copyButton text="${copyClassAndTestName}"
-                                  clazz="squarecopy"
-                                  iconOnly="true"
-                                  tooltip="Copy ${it.className}#${it.displayName}" />
-                </j:if>
+                <l:copyButton text="${it.className}#${it.displayName}"
+                              clazz="squarecopy"
+                              iconOnly="true"
+                              tooltip="Copy ${it.className}#${it.displayName}" />
             </h1>
         </div>
         <div class="jenkins-app-bar__controls">

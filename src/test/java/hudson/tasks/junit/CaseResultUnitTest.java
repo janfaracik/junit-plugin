@@ -106,20 +106,4 @@ class CaseResultUnitTest {
 
         assertNull(cr.getCopyAsPrompt());
     }
-
-    @Test
-    void copyClassAndTestNameUsesSimpleClassName() {
-        CaseResult cr = new CaseResult(
-                null,
-                "io.jenkins.example.SampleTest",
-                "testFailure",
-                "boom",
-                null,
-                1.5f,
-                "stdout",
-                "stderr",
-                "trace");
-
-        assertEquals("SampleTest#testFailure", cr.getCopyClassAndTestName());
-    }
 }

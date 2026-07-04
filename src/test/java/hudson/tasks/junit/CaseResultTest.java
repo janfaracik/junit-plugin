@@ -241,20 +241,10 @@ class CaseResultTest {
         assertTrue(prompt.contains("\nStack trace:\n"));
         assertTrue(prompt.endsWith("Page URL: " + failedPage.getUrl().toExternalForm() + "\n"));
 
-        HtmlElement copyClassAndTestButton = failedPage.getFirstByXPath(
-                "//button[contains(@class,'jenkins-copy-button') and normalize-space(.)='Copy class#test']");
-        assertNotNull(copyClassAndTestButton);
-        assertEquals(failed.getCopyClassAndTestName(), copyClassAndTestButton.getAttribute("text"));
-
         CaseResult passed = tr.getPassedTests().get(0);
         HtmlPage passedPage =
                 rule.createWebClient().goTo("job/copy-as-prompt/1/testReport/" + passed.getRelativePathFrom(tr));
         assertTrue(passedPage.getByXPath("//button[normalize-space(.)='Copy as prompt']").isEmpty());
-
-        HtmlElement passedCopyClassAndTestButton = passedPage.getFirstByXPath(
-                "//button[contains(@class,'jenkins-copy-button') and normalize-space(.)='Copy class#test']");
-        assertNotNull(passedCopyClassAndTestButton);
-        assertEquals(passed.getCopyClassAndTestName(), passedCopyClassAndTestButton.getAttribute("text"));
     }
 
     /**

@@ -1035,24 +1035,6 @@ public class CaseResult extends TestResult implements Comparable<CaseResult> {
         return prompt.toString();
     }
 
-    @CheckForNull
-    @Restricted(NoExternalUse.class)
-    public String getCopyClassAndTestName() {
-        String testName = getName();
-        if (testName == null || testName.isBlank()) {
-            return null;
-        }
-
-        String className = getClassName();
-        if (className == null || className.isBlank()) {
-            return testName;
-        }
-
-        int idx = className.lastIndexOf('.');
-        String simpleClassName = className.substring(idx + 1);
-        return simpleClassName.isBlank() ? testName : simpleClassName + "#" + testName;
-    }
-
     private static void appendPromptLine(StringBuilder prompt, String label, String value) {
         if (value != null && !value.isBlank()) {
             prompt.append(label).append(": ").append(value).append('\n');
