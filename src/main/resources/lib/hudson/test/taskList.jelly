@@ -61,6 +61,9 @@ THE SOFTWARE.
                                     <span class="jenkins-!-text-color-secondary">
                                         ${f.durationString}
                                     </span>
+                                    <j:if test="${f.suiteResult != null &amp;&amp; f.className != f.suiteResult.name}">
+                                        (from <st:out value="${f.suiteResult.name}"/>)
+                                    </j:if>
                                     <t:condition-tag test="${f}" />
                                 </span>
                             </span>
@@ -75,6 +78,9 @@ THE SOFTWARE.
                                     <span class="jenkins-!-text-color-secondary">
                                         ${f.durationString}
                                     </span>
+                                    <j:if test="${f.suiteResult != null &amp;&amp; f.className != f.suiteResult.name}">
+                                        (from <st:out value="${f.suiteResult.name}"/>)
+                                    </j:if>
                                     <t:condition-tag test="${f}" />
                                 </span>
                             </a>
