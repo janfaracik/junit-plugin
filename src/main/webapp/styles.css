@@ -41,7 +41,7 @@
   text-box: cap alphabetic;
   font-weight: 450;
   background: color-mix(in srgb, var(--color, var(--text-color-secondary)) 10%, transparent);
-  border: var(--jenkins-border-width) solid color-mix(in srgb, var(--color, var(--text-color-secondary)) 10%, transparent);
+  border: var(--jenkins-border-width) solid var(--jenkins-border-color--inherit-subtle);
   color: var(--color, var(--text-color)) !important;
   text-decoration: none !important;
   transition: var(--standard-transition);
