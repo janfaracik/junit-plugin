@@ -26,7 +26,9 @@ THE SOFTWARE.
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:t="/lib/hudson/test">
   <j:if test="${it.totalCount!=0}">
     <f:section title="${%All Tests}">
-      <t:table items="${it.children}" id="testresult" />
+      <div id="tasks">
+        <t:taskList items="${it.children}" relativeParent="${it}" />
+      </div>
     </f:section>
   </j:if>
 </j:jelly>
