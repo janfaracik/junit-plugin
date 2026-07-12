@@ -23,7 +23,7 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:p="/prism" xmlns:t="/lib/hudson" xmlns:test="/lib/hudson/test">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:p="/prism" xmlns:t="/lib/hudson" xmlns:test="/lib/hudson/test" xmlns:dd="/lib/layout/dropdowns">
   <j:set var="test" value="${it}" />
   <j:set var="it" value="${it.parentAction}" />
 
@@ -44,7 +44,11 @@ THE SOFTWARE.
         <div class="jp-test-split-view">
           <div class="jp-test-split-view__table">
             <l:app-bar title="${it.title}">
-              <l:overflowButton/>
+              <l:overflowButton>
+                <dd:item text="${%History}"
+                         icon="symbol-bar-chart-outline plugin-ionicons-api"
+                         href="history" />
+              </l:overflowButton>
             </l:app-bar>
 
             <div style="display: grid; grid-template-columns: 1fr auto; margin-bottom: var(--section-padding); margin-top: -0.5rem">
@@ -110,13 +114,15 @@ THE SOFTWARE.
 
 <!--            <t:editableDescription permission="${it.run.UPDATE}" hideButton="true" />-->
 
-<!--            <test:success-summary />-->
+            <test:success-summary />
 
             <j:forEach var="action" items="${it.testActions}">
               <st:include page="summary.jelly" from="${action}" optional="true" it="${action}" />
             </j:forEach>
 
             <st:include page="body.jelly" />
+
+
           </div>
 
           <div class="jp-test-split-view__detail" id="junit-test-details">
