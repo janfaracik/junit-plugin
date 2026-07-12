@@ -1327,7 +1327,7 @@ public class CaseResult extends TestResult implements Comparable<CaseResult> {
         return switch (getStatus()) {
             case PASSED -> "symbol-status-blue";
             case SKIPPED -> "symbol-status-skipped plugin-junit";
-            default -> this.isProperFailure ? "symbol-status-failure plugin-junit" : "symbol-status-red";
+            default -> this.isProperFailure ? "symbol-status-yellow" : "symbol-status-red";
         };
     }
 }
