@@ -24,149 +24,48 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test">
   <st:once>
     <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
     <st:adjunct includes="lib.hudson.test.js.failureSummary" />
+    <st:adjunct includes="lib.hudson.test.js.testTree" />
   </st:once>
 
   <div id="tasks">
-  <j:if test="${it.failCount!=0}">
-<!--    <f:section title="${%All Failed Tests}">-->
-        <j:choose>
-          <j:when test="${it.childType eq 'package'}">
-            <j:forEach var="p" items="${it.children}">
-              <j:if test="${p.failCount!=0}">
-                <j:forEach var="c" items="${p.children}">
-                  <j:if test="${c.failCount!=0}">
-                    <summary class="jenkins-side-nav__heading">
-                      <j:choose>
-                        <j:when test="${empty p.displayName}">(default package).${c.displayName}</j:when>
-                        <j:otherwise>${p.displayName}.${c.displayName}</j:otherwise>
-                      </j:choose>
-                    </summary>
-                    <t:taskList items="${c.failedTests}" relativeParent="${it}" />
-                  </j:if>
-                </j:forEach>
-              </j:if>
-            </j:forEach>
-          </j:when>
-          <j:otherwise>
-            <t:taskList items="${it.failedTests}" />
-          </j:otherwise>
-        </j:choose>
-<!--    </f:section>-->
-  </j:if>
-
-  <j:if test="${it.totalCount!=0}">
-      <div class="jenkins-side-nav__heading">
-        All tests
-      </div>
+    <j:if test="${it.failCount!=0}">
       <j:choose>
         <j:when test="${it.childType eq 'package'}">
           <j:forEach var="p" items="${it.children}">
-            <div class="task">
-              <span class="task-link-wrapper">
-                <a class="task-link task-link-no-confirm" href="${p.getRelativePathFrom(it)}">
-                  <span class="task-link-text">
+            <j:if test="${p.failCount!=0}">
+              <j:forEach var="c" items="${p.children}">
+                <j:if test="${c.failCount!=0}">
+                  <summary class="jenkins-side-nav__heading">
                     <j:choose>
-                      <j:when test="${empty p.displayName}">(default package)</j:when>
-                      <j:otherwise><st:out value="${p.displayName}" /></j:otherwise>
+                      <j:when test="${empty p.displayName}">(default package).${c.displayName}</j:when>
+                      <j:otherwise>${p.displayName}.${c.displayName}</j:otherwise>
                     </j:choose>
-                    <span class="jenkins-!-text-color-secondary">
-                      ${p.failCount} fail / ${p.skipCount} skip / ${p.passCount} pass / ${p.totalCount} total / ${p.durationString}
-                    </span>
-                  </span>
-                </a>
-              </span>
-              <j:forEach var="badge" items="${p.testActions}">
-                <st:include it="${badge}" page="badge.jelly" optional="true"/>
+                  </summary>
+                  <t:taskList items="${c.failedTests}" relativeParent="${it}" />
+                </j:if>
               </j:forEach>
-              <div class="subtasks">
-                <j:forEach var="c" items="${p.children}">
-                  <div class="task">
-                    <span class="task-link-wrapper">
-                      <a class="task-link task-link-no-confirm" href="${c.getRelativePathFrom(it)}">
-                        <span class="task-link-text">
-                          <st:out value="${c.displayName}" />
-                          <span class="jenkins-!-text-color-secondary">
-                            ${c.failCount} fail / ${c.skipCount} skip / ${c.passCount} pass / ${c.totalCount} total / ${c.durationString}
-                          </span>
-                        </span>
-                      </a>
-                    </span>
-                    <j:forEach var="badge" items="${c.testActions}">
-                      <st:include it="${badge}" page="badge.jelly" optional="true"/>
-                    </j:forEach>
-                  </div>
-                </j:forEach>
-              </div>
-            </div>
+            </j:if>
           </j:forEach>
         </j:when>
         <j:otherwise>
-          <j:forEach var="c" items="${it.children}">
-            <div class="task">
-              <span class="task-link-wrapper">
-                <a class="task-link task-link-no-confirm" href="${c.getRelativePathFrom(it)}">
-                  <span class="task-link-text">
-                    <st:out value="${c.displayName}" />
-                    <span class="jenkins-!-text-color-secondary">
-                      ${c.failCount} fail / ${c.skipCount} skip / ${c.passCount} pass / ${c.totalCount} total / ${c.durationString}
-                    </span>
-                  </span>
-                </a>
-              </span>
-              <j:forEach var="badge" items="${c.testActions}">
-                <st:include it="${badge}" page="badge.jelly" optional="true"/>
-              </j:forEach>
-              <div class="subtasks">
-                <j:forEach var="f" items="${c.children}">
-                  <j:set var="url" value="${f.getRelativePathFrom(it)}" />
-                  <j:set var="id" value="${h.htmlAttributeEscape(url)}" />
-                  <div class="task">
-                    <span class="task-link-wrapper">
-                      <j:choose>
-                        <j:when test="${f.status == 'SKIPPED' and f.skippedMessage == null || f.skippedMessage.isEmpty()}">
-                          <span class="task-link">
-                            <span class="task-icon-link">
-                              <l:icon src="${f.iconFileName}" />
-                            </span>
-                            <span class="task-link-text">
-                              ${f.name}
-                              <span class="jenkins-!-text-color-secondary">
-                                ${f.durationString}
-                              </span>
-                              <t:condition-tag test="${f}" />
-                            </span>
-                          </span>
-                        </j:when>
-                        <j:otherwise>
-                          <a id="test-${id}-showlink" class="task-link task-link-no-confirm" href="${url}">
-                            <span class="task-icon-link">
-                              <l:icon src="${f.iconFileName}" />
-                            </span>
-                            <span class="task-link-text">
-                              ${f.name}
-                              <span class="jenkins-!-text-color-secondary">
-                                ${f.durationString}
-                              </span>
-                              <t:condition-tag test="${f}" />
-                            </span>
-                          </a>
-                        </j:otherwise>
-                      </j:choose>
-                    </span>
-                    <j:forEach var="badge" items="${f.testActions}">
-                      <st:include it="${badge}" page="badge.jelly" optional="true" />
-                    </j:forEach>
-                  </div>
-                </j:forEach>
-              </div>
-            </div>
-          </j:forEach>
+          <t:taskList items="${it.failedTests}" />
         </j:otherwise>
       </j:choose>
+    </j:if>
+
+    <j:if test="${it.totalCount!=0}">
+      <div class="jenkins-side-nav__heading">
+        All tests
+      </div>
+      <div class="jp-test-tree" id="testresult">
+        <j:forEach var="node" items="${it.allTestsTree}">
+          <st:include it="${node}" page="tree.jelly" />
+        </j:forEach>
+      </div>
     </j:if>
   </div>
 </j:jelly>

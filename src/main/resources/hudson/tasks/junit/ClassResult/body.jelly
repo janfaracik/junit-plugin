@@ -23,12 +23,10 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:t="/lib/hudson/test">
+<j:jelly xmlns:j="jelly:core" xmlns:t="/lib/hudson/test">
   <j:if test="${it.totalCount!=0}">
-    <f:section title="${%All Tests}">
-      <div id="tasks">
-        <t:taskList items="${it.children}" relativeParent="${it}" />
-      </div>
-    </f:section>
+    <div id="tasks">
+      <t:taskList items="${it.children}" relativeParent="${it}" />
+    </div>
   </j:if>
 </j:jelly>

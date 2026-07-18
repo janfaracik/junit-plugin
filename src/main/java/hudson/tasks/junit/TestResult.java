@@ -33,6 +33,7 @@ import hudson.tasks.test.MetaTabulatedResult;
 import hudson.tasks.test.PipelineBlockWithTests;
 import hudson.tasks.test.PipelineTestDetails;
 import hudson.tasks.test.TabulatedResult;
+import hudson.tasks.test.TestTreeNode;
 import hudson.tasks.test.TestObject;
 import io.jenkins.plugins.junit.storage.TestResultImpl;
 import io.jenkins.plugins.prism.PrismConfiguration;
@@ -710,6 +711,35 @@ public final class TestResult extends MetaTabulatedResult {
     @Override
     public String getChildType() {
         return "package";
+    }
+
+    @Override
+    public List<TestTreeNode> getAllTestsTree() {
+        TestTreeNode root = TestTreeNode.packageNode("");
+        for (PackageResult packageResult : getChildren()) {
+            String displayName = packageResult.getDisplayName();
+            if (displayName.isEmpty()) {
+                TestTreeNode defaultPackage = root.getOrCreatePackageChild("(default package)");
+                defaultPackage.attach(packageResult, this);
+                for (ClassResult classResult : packageResult.getChildren()) {
+                    defaultPackage.addChild(TestTreeNode.fromTestResult(classResult, this));
+                }
+                continue;
+            }
+
+            TestTreeNode packageNode = root;
+            for (String segment : displayName.split("\\.")) {
+                packageNode = packageNode.getOrCreatePackageChild(segment);
+            }
+            packageNode.attach(packageResult, this);
+            for (ClassResult classResult : packageResult.getChildren()) {
+                packageNode.addChild(TestTreeNode.fromTestResult(classResult, this));
+            }
+        }
+        List<TestTreeNode> nodes = root.getChildren();
+        nodes.forEach(TestTreeNode::collapseTreeBranches);
+        TestTreeNode.prepareForRendering(nodes);
+        return nodes;
     }
 
     @Exported(visibility = 999)

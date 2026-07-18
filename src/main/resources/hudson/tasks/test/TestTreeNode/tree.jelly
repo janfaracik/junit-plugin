@@ -1,0 +1,93 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test">
+  <j:choose>
+    <j:when test="${it.expandable}">
+      <details class="jp-test-tree__node" data-tree-path="${it.treePath}">
+        <summary class="jp-test-tree__summary">
+          <j:choose>
+            <j:when test="${it.url != null}">
+              <a class="jp-test-tree__summary-link task-link-no-confirm" href="${it.url}" data-test-tree-link="true">
+                  <span class="task-icon-link">
+                    <l:icon src="symbol-folder" />
+                  </span>
+                <span class="jp-test-tree__label">
+                  <st:out value="${it.label}" />
+                </span>
+                <j:if test="${it.metaText != null}">
+                  <span class="jp-test-tree__meta">
+                    ${it.metaText}
+                  </span>
+                </j:if>
+              </a>
+            </j:when>
+            <j:otherwise>
+              <span class="jp-test-tree__summary-content">
+                  <span class="task-icon-link">
+                    <l:icon src="symbol-folder" />
+                  </span>
+                <span class="jp-test-tree__label">
+                  <st:out value="${it.label}" />
+                </span>
+                <j:if test="${it.metaText != null}">
+                  <span class="jp-test-tree__meta">
+                    ${it.metaText}
+                  </span>
+                </j:if>
+              </span>
+            </j:otherwise>
+          </j:choose>
+        </summary>
+        <div class="jp-test-tree__children"></div>
+      </details>
+    </j:when>
+    <j:otherwise>
+      <div class="task jp-test-tree__leaf">
+        <span class="task-link-wrapper">
+          <j:choose>
+            <j:when test="${it.caseNode and it.skippedWithoutMessage}">
+              <span class="task-link">
+                  <span class="task-icon-link">
+                    <l:icon src="symbol-folder" />
+                  </span>
+                <span class="task-link-text">
+                  <st:out value="${it.label}" />
+                  <j:if test="${it.metaText != null}">
+                    <span class="jenkins-!-text-color-secondary">
+                      ${it.metaText}
+                    </span>
+                  </j:if>
+                  <j:if test="${it.testObject != null}">
+                    <t:condition-tag test="${it.testObject}" />
+                  </j:if>
+                </span>
+              </span>
+            </j:when>
+            <j:otherwise>
+              <a id="test-${h.htmlAttributeEscape(it.url)}-showlink" class="task-link task-link-no-confirm" href="${it.url}">
+                  <span class="task-icon-link">
+                    <l:icon src="symbol-folder" />
+                  </span>
+                <span class="task-link-text">
+                  <st:out value="${it.label}" />
+                  <j:if test="${it.metaText != null}">
+                    <span class="jenkins-!-text-color-secondary">
+                      ${it.metaText}
+                    </span>
+                  </j:if>
+                  <j:if test="${it.testObject != null}">
+                    <t:condition-tag test="${it.testObject}" />
+                  </j:if>
+                </span>
+              </a>
+            </j:otherwise>
+          </j:choose>
+        </span>
+        <j:if test="${it.testObject != null}">
+          <j:forEach var="badge" items="${it.testObject.testActions}">
+            <st:include it="${badge}" page="badge.jelly" optional="true" />
+          </j:forEach>
+        </j:if>
+      </div>
+    </j:otherwise>
+  </j:choose>
+</j:jelly>

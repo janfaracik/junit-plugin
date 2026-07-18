@@ -1,0 +1,6 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+  <j:forEach var="child" items="${it.children}">
+    <st:include it="${child}" page="tree.jelly" />
+  </j:forEach>
+</j:jelly>

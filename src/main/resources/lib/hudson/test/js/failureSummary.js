@@ -2,25 +2,23 @@ const PREFIX = "test-";
 const CACHE = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeShowHideLinks();
     tryShowConfetti();
 });
 
-function initializeShowHideLinks() {
-    document.querySelectorAll('[id$="-showlink"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            if (window.innerWidth <= 800) {
-                return;
-            }
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('[id$="-showlink"]');
+    if (!link || window.innerWidth <= 800) {
+        return;
+    }
 
-            let link = e.currentTarget;
-            const splitView = document.getElementById("junit-test-details");
+    const splitView = document.getElementById("junit-test-details");
+    if (!splitView) {
+        return;
+    }
 
-            e.preventDefault();
-            showTestDetails(link, splitView);
-        });
-    });
-}
+    e.preventDefault();
+    showTestDetails(link, splitView);
+});
 
 function showTestDetails(link, element) {
     document.querySelectorAll('[id$="-showlink"].active, [id$="-showlink"].task-link--active').forEach(activeLink => {
@@ -31,9 +29,21 @@ function showTestDetails(link, element) {
     link.classList.add("active");
     link.classList.add("task-link--active");
 
-    const id = link.id.replace(/-showlink$/, '');
-    const summaryUrl = new URL(`${id.replace(PREFIX, '')}summary`, document.URL);
+    const summaryUrl = getSummaryUrl(link);
     loadContent(element, summaryUrl);
+}
+
+function getSummaryUrl(link) {
+    const url = new URL(link.href, document.URL);
+    url.search = '';
+    url.hash = '';
+
+    if (!url.pathname.endsWith('/')) {
+        url.pathname += '/';
+    }
+
+    url.pathname += 'summary';
+    return url;
 }
 
 function loadContent(element, query) {

@@ -23,7 +23,12 @@
  */
 package hudson.tasks.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.HttpResponses;
+import org.kohsuke.stapler.QueryParameter;
 
 /**
  * The purpose of this class is to provide a good place for the
@@ -34,6 +39,23 @@ import java.util.Collection;
  * @author Kohsuke Kawaguchi
  */
 public abstract class MetaTabulatedResult extends TabulatedResult {
+
+    public List<TestTreeNode> getAllTestsTree() {
+        List<TestTreeNode> nodes = new ArrayList<>();
+        for (TestResult child : getChildren()) {
+            nodes.add(TestTreeNode.fromTestResult(child, this));
+        }
+        TestTreeNode.prepareForRendering(nodes);
+        return nodes;
+    }
+
+    public HttpResponse doTreeChildren(@QueryParameter String path) {
+        TestTreeNode node = TestTreeNode.findByTreePath(getAllTestsTree(), path);
+        if (node == null || !node.isExpandable()) {
+            return HttpResponses.notFound();
+        }
+        return HttpResponses.forwardToView(node, "children.jelly");
+    }
 
     /**
      * All failed tests.
