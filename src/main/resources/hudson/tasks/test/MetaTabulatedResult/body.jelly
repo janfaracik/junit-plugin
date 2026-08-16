@@ -57,15 +57,15 @@ THE SOFTWARE.
       </j:choose>
     </j:if>
 
-    <j:if test="${it.totalCount!=0}">
-      <div class="jenkins-side-nav__heading">
-        All tests
-      </div>
-      <div class="jp-test-tree" id="testresult">
-        <j:forEach var="node" items="${it.allTestsTree}">
-          <st:include it="${node}" page="tree.jelly" />
-        </j:forEach>
-      </div>
-    </j:if>
+<!--    <j:if test="${it.totalCount!=0}">-->
+<!--      <div class="jenkins-side-nav__heading">-->
+<!--        All tests-->
+<!--      </div>-->
+<!--      <div class="jp-test-tree" id="testresult">-->
+<!--        <j:forEach var="node" items="${it.allTestsTree}">-->
+<!--          <st:include it="${node}" page="tree.jelly" />-->
+<!--        </j:forEach>-->
+<!--      </div>-->
+<!--    </j:if>-->
   </div>
 </j:jelly>

@@ -1,3 +1,53 @@
+.idkyettt {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin-bottom: 1.125rem;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--input-color);
+    border: var(--jenkins-border-width) solid var(--input-border);
+    border-radius: var(--form-input-border-radius);
+    box-shadow: var(--form-input-glow);
+    transition: var(--standard-transition);
+  }
+
+  input {
+    border: none !important;
+    box-shadow: none !important;
+    background: none !important;
+  }
+
+  button {
+    aspect-ratio: 1;
+    padding: 0;
+    min-height: 0;
+    border-radius: calc(var(--form-input-border-radius) - 0.25rem);
+    padding-inline: 0;
+
+    &::before,
+    &::after {
+      inset: 0.25rem;
+    }
+  }
+
+  &:hover {
+    &::before {
+      border-color: var(--input-border-hover);
+    }
+  }
+
+  &:has(input:focus) {
+    &::before {
+      border-color: var(--focus-input-border);
+      box-shadow: var(--form-input-glow--focus);
+    }
+  }
+}
+
 /* Pills */
 .jp-pills {
   display: flex;
