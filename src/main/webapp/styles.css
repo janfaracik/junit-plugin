@@ -296,7 +296,6 @@ a.jp-table-row {
   grid-template-columns: 450px 3fr;
   align-items: stretch;
   overflow: hidden;
-  height: 80vh;
 }
 
 .jp-test-split-view__table {
