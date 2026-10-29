@@ -77,8 +77,7 @@ THE SOFTWARE.
 <!--              </l:overflowButton>-->
             </l:app-bar>
 
-            <div class="idkyettt">
-              <l:search-bar hasKeyboardShortcut="false" />
+            <j:set var="filter">
               <l:overflowButton icon="symbol-filter-outline plugin-ionicons-api"
                                 clazz="jenkins-!-accent-color"
                                 tooltip="Filter">
@@ -92,7 +91,8 @@ THE SOFTWARE.
                          icon="symbol-status-blue"
                          href="history" />
               </l:overflowButton>
-            </div>
+            </j:set>
+            <l:search-bar clazz="jp-search" charms="${filter}" />
 
 <!--            <div style="display: grid; grid-template-columns: 1fr auto; margin-bottom: var(&#45;&#45;section-padding); margin-top: -0.5rem">-->
 <!--              <div class="jenkins-details">-->
