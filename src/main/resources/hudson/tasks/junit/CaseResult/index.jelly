@@ -23,15 +23,14 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:test="/lib/hudson/test" xmlns:p="/prism">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
   <j:set var="test" value="${it}" />
   <j:set var="it" value="${it.parentAction}" />
 
   <l:run-subpage>
-
-
-<!--    <div class="jp-code-list">-->
+    <!-- l:run-subpage doesn't take a width for its main panel, so use core's narrow main panel class on the content -->
+    <div class="app-main-panel--narrow">
       <st:include page="test-output.jelly" it="${test}" />
-<!--    </div>-->
+    </div>
   </l:run-subpage>
 </j:jelly>

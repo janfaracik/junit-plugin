@@ -1,7 +1,3 @@
-.jp-search {
-  margin-bottom: 1.125rem;
-}
-
 /* Pills */
 .jp-pills {
   display: flex;
@@ -278,155 +274,6 @@ a.jp-table-row {
   }
 }
 
-/* Custom */
-
-.jp-test-split-view {
-  display: grid;
-  grid-template-columns: 450px 3fr;
-  align-items: stretch;
-  overflow: hidden;
-}
-
-.jp-test-split-view__table {
-  overflow-y: auto;
-  padding-inline: var(--section-padding);
-}
-
-.jp-test-split-view__table,
-.jp-test-split-view__detail {
-  min-width: 0;
-}
-
-.jp-test-tree {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.jp-test-tree__node {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-
-  &[open] {
-    > .jp-test-tree__summary {
-      background: color-mix(in srgb, var(--text-color-secondary) 7%, transparent);
-    }
-  }
-}
-
-.jp-test-tree__summary {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.625rem;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  transition: background var(--standard-transition);
-
-  &:hover {
-    background: color-mix(in srgb, var(--text-color-secondary) 5%, transparent);
-  }
-
-  &::marker {
-    color: var(--text-color-secondary);
-  }
-}
-
-.jp-test-tree__summary-content,
-.jp-test-tree__summary-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
-  width: 100%;
-}
-
-.jp-test-tree__summary-link {
-  color: inherit !important;
-  text-decoration: none !important;
-}
-
-.jp-test-tree__label {
-  font-weight: 500;
-  word-break: break-word;
-}
-
-.jp-test-tree__meta {
-  color: var(--text-color-secondary);
-  margin-left: auto;
-  text-align: right;
-}
-
-.jp-test-tree__children {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-  margin-left: 0.875rem;
-  padding-left: 0.875rem;
-  border-left: var(--jenkins-border-width) solid var(--jenkins-border-color--inherit-subtle);
-}
-
-.jp-test-tree__leaf .task-link-text {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.jp-test-tree__loading {
-  color: var(--text-color-secondary);
-  padding: 0.125rem 0;
-}
-
-@media (width <= 800px) {
-  .jp-test-tree__summary {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .jp-test-tree__meta {
-    margin-left: 0;
-    text-align: left;
-  }
-}
-
-.jp-test-split-view__detail {
-  border-left: 1.5px solid color-mix(in sRGB, var(--jenkins-border-color), transparent);
-  overflow-y: auto;
-  padding: 0 calc(var(--section-padding) * 5) var(--section-padding) calc(var(--section-padding) * 5);
-  /*max-width: 1200px;*/
-  /*margin-inline: auto;*/
-}
-
-.jp-test-split-view__placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  padding: var(--section-padding);
-  height: 100%;
-  font-size: var(--font-size-base);
-  font-weight: var(--font-bold-weight);
-  text-align: center;
-
-  & > svg {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-}
-
-@media (width <= 1200px) {
-  .jp-test-split-view {
-    grid-template-columns: 1fr;
-  }
-
-  .jp-test-split-view__detail,
-  .jp-test-split-view__detail-content {
-    min-height: 50vh;
-  }
-}
-
 /* Notice needs to have overflow hidden to contain the confetti canvas */
 .jenkins-notice {
   position: relative;
@@ -490,17 +337,21 @@ h1 {
 
 /* Test result panel, floating at the side of the page when a row of a test table is clicked */
 .jp-test-panel {
+  /* Sits inside core's page frame, which is inset by --page-inset and rounded by --form-input-border-radius. The
+     panel keeps another --page-inset from it, with corners that are concentric with the frame's */
+  --jp-test-panel-gap: var(--page-inset, 0.3125rem);
+
   position: fixed;
-  top: calc(var(--header-height, 3.5rem) + 0.75rem);
-  right: var(--page-inset, 0.75rem);
-  bottom: var(--page-inset, 0.75rem);
+  top: calc(2 * var(--header-height, 3.5rem) + var(--jp-test-panel-gap));
+  right: calc(var(--page-inset, 0.3125rem) + var(--jp-test-panel-gap));
+  bottom: calc(var(--page-inset, 0.3125rem) + var(--jp-test-panel-gap));
   z-index: 10;
   display: flex;
   flex-direction: column;
-  width: min(760px, calc(100vw - 2 * var(--page-inset, 0.75rem)));
+  width: min(760px, calc(100vw - 2 * (var(--page-inset, 0.3125rem) + var(--jp-test-panel-gap))));
   background: var(--overlay-surface-background, var(--background));
   border: var(--jenkins-border);
-  border-radius: 1rem;
+  border-radius: max(0px, calc(var(--form-input-border-radius, 0.6875rem) - var(--jp-test-panel-gap)));
   box-shadow: var(--elevation-3-box-shadow, 0 0 2rem rgb(0 0 0 / 0.2));
   outline: none;
   transition: var(--standard-transition);

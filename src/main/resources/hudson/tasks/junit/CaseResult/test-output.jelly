@@ -80,11 +80,9 @@ THE SOFTWARE.
         </d:tag>
     </d:taglib>
 
-<!--    <j:set var="it" value="${test}" />-->
     <p:prism configuration="${it.prismConfiguration}" />
     <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
 
-    <j:set var="st" value="${it.status}" />
     <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
 
     <div class="jenkins-app-bar jenkins-app-bar--with-icon">
@@ -164,7 +162,7 @@ THE SOFTWARE.
 
         <local:item id="${id}" name="error" title="${%Error Details}" value="${it.errorDetails}" />
         <local:item id="${id}" name="skipmessage" title="${%Skip Message}" value="${it.skippedMessage}" />
-        <j:forEach var="p" items="${it.properties}">
+        <j:forEach var="p" items="${it.displayedProperties}">
             <local:item id="${id}" name="${p.key}" title="${p.key}" value="${p.value}" link="${it.isUrlValue(p.value)}" />
         </j:forEach>
         <local:item id="${id}" name="stacktrace" title="${%Stack Trace}" value="${it.errorStackTrace}" />
