@@ -35,6 +35,7 @@ import hudson.tasks.test.PipelineTestDetails;
 import hudson.tasks.test.TabulatedResult;
 import hudson.tasks.test.TestTreeNode;
 import hudson.tasks.test.TestObject;
+import io.jenkins.plugins.junit.opentest.OtrReader;
 import io.jenkins.plugins.junit.storage.TestResultImpl;
 import io.jenkins.plugins.prism.PrismConfiguration;
 import java.io.File;
@@ -443,6 +444,7 @@ public final class TestResult extends MetaTabulatedResult {
 
     private void parse(long filesTimestamp, PipelineTestDetails pipelineTestDetails, Iterable<File> reportFiles)
             throws IOException {
+        List<OpenTestReportConverter.TestRun> openTestReports = new ArrayList<>();
         for (File reportFile : reportFiles) {
             if (skipOldReports
                     && Files.getLastModifiedTime(reportFile.toPath()).toMillis()
@@ -456,8 +458,9 @@ public final class TestResult extends MetaTabulatedResult {
                 continue;
             }
             // only count files that were actually updated during this build
-            parsePossiblyEmpty(reportFile, pipelineTestDetails);
+            parsePossiblyEmpty(reportFile, pipelineTestDetails, openTestReports);
         }
+        addOpenTestReports(openTestReports);
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("testSuites size:" + this.getSuites().size());
         }
@@ -526,13 +529,23 @@ public final class TestResult extends MetaTabulatedResult {
      */
     @Deprecated
     public void parse(Iterable<File> reportFiles, PipelineTestDetails pipelineTestDetails) throws IOException {
+        List<OpenTestReportConverter.TestRun> openTestReports = new ArrayList<>();
         for (File reportFile : reportFiles) {
             // only count files that were actually updated during this build
-            parsePossiblyEmpty(reportFile, pipelineTestDetails);
+            parsePossiblyEmpty(reportFile, pipelineTestDetails, openTestReports);
         }
+        addOpenTestReports(openTestReports);
     }
 
-    private void parsePossiblyEmpty(File reportFile, PipelineTestDetails pipelineTestDetails) throws IOException {
+    /**
+     * @param openTestReports where to add the results of Open Test Reporting reports, which are added once all are
+     *                        parsed, so that the reruns of failed tests in some can be folded into the others
+     */
+    private void parsePossiblyEmpty(
+            File reportFile,
+            PipelineTestDetails pipelineTestDetails,
+            List<OpenTestReportConverter.TestRun> openTestReports)
+            throws IOException {
         if (reportFile.length() == 0) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("reportFile:" + reportFile + " is empty");
@@ -542,8 +555,17 @@ public final class TestResult extends MetaTabulatedResult {
             sr.addCase(new CaseResult(
                     sr, "[empty]", "Test report file " + reportFile.getAbsolutePath() + " was length 0"));
             add(sr);
+        } else if (OtrReader.detect(reportFile) != null) {
+            openTestReports.add(new OpenTestReportConverter.TestRun(parseSuites(reportFile, pipelineTestDetails)));
         } else {
             parse(reportFile, pipelineTestDetails);
+        }
+    }
+
+    private void addOpenTestReports(List<OpenTestReportConverter.TestRun> openTestReports) {
+        for (SuiteResult suite :
+                OpenTestReportConverter.mergeReruns(openTestReports).suites()) {
+            add(suite);
         }
     }
 
@@ -646,21 +668,24 @@ public final class TestResult extends MetaTabulatedResult {
      * @since 1.22
      */
     public void parse(File reportFile, PipelineTestDetails pipelineTestDetails) throws IOException {
+        for (SuiteResult suiteResult : parseSuites(reportFile, pipelineTestDetails)) {
+            add(suiteResult);
+        }
+    }
+
+    private List<SuiteResult> parseSuites(File reportFile, PipelineTestDetails pipelineTestDetails) throws IOException {
         if (impl != null) {
             throw new IllegalStateException("Cannot reparse using a pluggable impl");
         }
         try {
             List<SuiteResult> suiteResults =
                     SuiteResult.parse(reportFile, stdioRetention, keepProperties, keepTestNames, pipelineTestDetails);
-            for (SuiteResult suiteResult : suiteResults) {
-                add(suiteResult);
-            }
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("reportFile:" + reportFile + ", lastModified:" + reportFile.lastModified() + " found "
                         + suiteResults.size() + " suite results");
             }
-
+            return suiteResults;
         } catch (InterruptedException | RuntimeException e) {
             throw new IOException("Failed to read " + reportFile, e);
         } catch (DocumentException e) {
@@ -676,7 +701,7 @@ public final class TestResult extends MetaTabulatedResult {
                 String error =
                         "Failed to read test report file " + reportFile.getAbsolutePath() + "\n" + writer.toString();
                 sr.addCase(new CaseResult(sr, "[failed-to-read]", error));
-                add(sr);
+                return List.of(sr);
             }
         }
     }
@@ -912,6 +937,20 @@ public final class TestResult extends MetaTabulatedResult {
         }
 
         return skippedTests;
+    }
+
+    /**
+     * Computes {@link CaseResult#getSkippedSince()} of all skipped tests, so that it is saved with the result.
+     */
+    void computeSkippedSince() {
+        // previous builds' results are only weakly referenced by their actions, so keep the ones already loaded
+        // for the other skipped tests rather than risk loading them again for each test
+        Map<Run<?, ?>, TestResult> previousResults = new HashMap<>();
+        for (SuiteResult s : suites) {
+            for (CaseResult cr : s.getCases()) {
+                cr.recomputeSkippedSinceIfNeeded(previousResults);
+            }
+        }
     }
 
     /**

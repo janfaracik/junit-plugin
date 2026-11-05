@@ -250,7 +250,9 @@ class CaseResultTest {
         CaseResult passed = tr.getPassedTests().get(0);
         HtmlPage passedPage =
                 rule.createWebClient().goTo("job/copy-as-prompt/1/testReport/" + passed.getRelativePathFrom(tr));
-        assertTrue(passedPage.getByXPath("//button[normalize-space(.)='Copy as prompt']").isEmpty());
+        assertTrue(passedPage
+                .getByXPath("//button[normalize-space(.)='Copy as prompt']")
+                .isEmpty());
     }
 
     /**

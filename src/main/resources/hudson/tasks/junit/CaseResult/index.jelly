@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 
 <!--    <div class="jp-code-list">-->
-      <st:include page="test-output.jelly" />
+      <st:include page="test-output.jelly" it="${test}" />
 <!--    </div>-->
   </l:run-subpage>
 </j:jelly>

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>6.2236.v12dd4c483242</version>
+    <version>6.2250.va_d01d559a_209</version>
     <relativePath />
   </parent>
 
@@ -35,7 +35,7 @@
     <hpi.bundledArtifacts>parallel-collectors</hpi.bundledArtifacts>
     <hpi.strictBundledArtifacts>true</hpi.strictBundledArtifacts>
     <jenkins.baseline>2.555</jenkins.baseline>
-    <jenkins.version>2.588</jenkins.version>
+    <jenkins.version>2.589</jenkins.version>
     <no-test-jar>false</no-test-jar>
     <spotless.check.skip>false</spotless.check.skip>
     <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
