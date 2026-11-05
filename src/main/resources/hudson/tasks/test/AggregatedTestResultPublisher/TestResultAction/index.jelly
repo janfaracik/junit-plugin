@@ -127,5 +127,6 @@ THE SOFTWARE.
         </f:section>
       </j:otherwise>
     </j:choose>
+    <test:testPanel />
   </l:run-subpage>
 </j:jelly>

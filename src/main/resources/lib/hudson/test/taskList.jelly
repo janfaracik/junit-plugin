@@ -48,7 +48,7 @@ THE SOFTWARE.
             <j:set var="url" value="${attrs.baseUrl}${f.getRelativePathFrom(attrs.relativeParent ?: it)}" />
             <j:set var="id" value="${h.htmlAttributeEscape(url)}" />
 
-            <div class="task" data-search="${f.fullName}">
+            <div class="task">
                 <span class="task-link-wrapper">
                     <j:choose>
                         <j:when test="${f.status == 'SKIPPED' and f.skippedMessage == null || f.skippedMessage.isEmpty()}">

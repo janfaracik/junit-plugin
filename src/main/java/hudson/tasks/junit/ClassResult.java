@@ -170,16 +170,6 @@ public final class ClassResult extends TabulatedResult implements Comparable<Cla
     }
 
     @Override
-    public List<CaseResult> getSkippedTests() {
-        return cases.stream().filter(CaseResult::isSkipped).toList();
-    }
-
-    @Override
-    public List<CaseResult> getPassedTests() {
-        return cases.stream().filter(CaseResult::isPassed).toList();
-    }
-
-    @Override
     public boolean hasChildren() {
         return (cases != null) && (cases.size() > 0);
     }

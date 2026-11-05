@@ -33,12 +33,12 @@ import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import hudson.tasks.junit.JUnitResultArchiver;
 import hudson.tasks.junit.TestResult;
 import hudson.tasks.junit.TestResultAction;
-import hudson.tasks.junit.JUnitResultArchiver;
 import java.io.IOException;
-import org.htmlunit.html.HtmlAnchor;
 import org.htmlunit.AlertHandler;
+import org.htmlunit.html.HtmlAnchor;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -99,15 +99,14 @@ class TestReportUiTest {
     }
 
     @Test
-    void testPagesRenderTestSplitView() throws Exception {
-        FreeStyleBuild b = configureTestBuild("split-view");
+    void testPagesRenderTestPanel() throws Exception {
+        FreeStyleBuild b = configureTestBuild("test-panel");
         TestResult result = b.getAction(TestResultAction.class).getResult();
 
         JenkinsRule.WebClient wc = j.createWebClient();
         HtmlPage topLevelPage = wc.getPage(b, "testReport");
 
-        assertNotNull(topLevelPage.getFirstByXPath(
-                "//div[contains(@class,'jp-test-split-view')]//div[@id='junit-test-details']"));
+        assertNotNull(topLevelPage.getFirstByXPath("//template[@id='jp-test-panel-template']"));
 
         HtmlAnchor failedTestLink = topLevelPage.getFirstByXPath("//table[@id='failedtestresult']//a[@href='"
                 + result.getFailedTests().get(0).getRelativePathFrom(result) + "']");
@@ -115,8 +114,7 @@ class TestReportUiTest {
         assertTrue(failedTestLink.getAttribute("target").isEmpty());
 
         HtmlPage classPage = wc.getPage(b, "testReport/org.twia.vendor/VendorManagerTest/");
-        assertNotNull(classPage.getFirstByXPath(
-                "//div[contains(@class,'jp-test-split-view')]//div[@id='junit-test-details']"));
+        assertNotNull(classPage.getFirstByXPath("//template[@id='jp-test-panel-template']"));
 
         HtmlAnchor classTestLink =
                 classPage.getFirstByXPath("//table[@id='testresult']//a[contains(@class,'jp-table-row')]");

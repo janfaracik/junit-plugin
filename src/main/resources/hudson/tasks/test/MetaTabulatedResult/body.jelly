@@ -24,49 +24,96 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test">
-  <st:once>
-    <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test" xmlns:f="/lib/form">
+  <j:if test="${it.failCount!=0}">
+    <f:section title="${%All Failed Tests}">
+      <t:table items="${it.failedTests}" id="failedtestresult" />
+    </f:section>
+  </j:if>
+
+  <j:if test="${it.skipCount!=0}">
     <st:adjunct includes="lib.hudson.test.js.failureSummary" />
-    <st:adjunct includes="lib.hudson.test.js.testTree" />
-  </st:once>
-
-  <!-- Failures are shown straight away. Skipped and passing tests are only loaded once they're turned on in the
-       report's filter, as there are usually many more of them -->
-  <div id="tasks" class="jp-test-lists">
-    <j:if test="${it.failCount!=0}">
-      <div class="jp-test-list" data-status="failed">
-        <t:groupedTaskList result="${it}" status="failed" />
-      </div>
-    </j:if>
-
-    <j:set var="listUrl" value="${h.getNearestAncestorUrl(request2, it)}/testList?status=" />
-    <j:if test="${it.skipCount!=0}">
-      <div class="jp-test-list" data-status="skipped" data-lazy-url="${listUrl}skipped"
-           data-error-text="${%loadFailedSkipped}" hidden="hidden">
+    <!-- collapsed by default, and only loaded when opened, as skipped tests are usually expected and the list
+         can be long -->
+    <details class="jenkins-section jp-skipped-tests" id="skipped"
+             data-lazy-url="${h.getNearestAncestorUrl(request2, it)}/skippedTestsTable"
+             data-error-text="${%loadFailed}">
+      <summary class="jenkins-section__title">
+        ${%All Skipped Tests}
+        <l:icon src="symbol-chevron-forward-outline plugin-ionicons-api" />
+      </summary>
+      <div class="jp-lazy-content">
         <span class="jenkins-spinner">${%Loading...}</span>
       </div>
-    </j:if>
-    <j:if test="${it.passCount!=0}">
-      <div class="jp-test-list" data-status="passed" data-lazy-url="${listUrl}passed"
-           data-error-text="${%loadFailedPassed}" hidden="hidden">
-        <span class="jenkins-spinner">${%Loading...}</span>
-      </div>
-    </j:if>
+    </details>
+  </j:if>
 
-    <p class="jp-test-lists__empty jenkins-!-text-color-secondary" hidden="hidden">
-      ${%noMatches}
-    </p>
-
-<!--    <j:if test="${it.totalCount!=0}">-->
-<!--      <div class="jenkins-side-nav__heading">-->
-<!--        All tests-->
-<!--      </div>-->
-<!--      <div class="jp-test-tree" id="testresult">-->
-<!--        <j:forEach var="node" items="${it.allTestsTree}">-->
-<!--          <st:include it="${node}" page="tree.jelly" />-->
-<!--        </j:forEach>-->
-<!--      </div>-->
-<!--    </j:if>-->
-  </div>
+  <j:if test="${it.totalCount!=0}">
+    <f:section title="${%All Tests}">
+    <table class="jenkins-table sortable" id="testresult">
+      <thead>
+        <tr>
+          <th>${it.childTitle}</th>
+          <th style="width: 8em;">${%Fail}</th>
+          <th style="width: 8em;">${%Skip}</th>
+          <th style="width: 8em;">${%Pass}</th>
+          <th style="width: 8em;">${%Total}</th>
+          <j:forEach var="tableheader" items="${it.testActions}">
+            <st:include it="${tableheader}" page="${it.childType}tableheader.jelly" optional="true"/>
+          </j:forEach>
+          <th style="width: 8em;">${%Duration}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <j:set var="prevAll" value="${it.previousResult}" />
+        <j:forEach var="p" items="${it.children}">
+          <j:set var="prev" value="${prevAll.findCorrespondingResult(p.id)}" />
+          <tr>
+            <td>
+              <j:invokeStatic var="encodedSafeName" className="hudson.Util" method="rawEncode">
+                <j:arg value="${p.safeName}" />
+              </j:invokeStatic>
+              <a href="${encodedSafeName}/" style="font-family: var(--font-family-mono)">
+                <span style="${prev==null?'font-weight:450':''}"><st:out value="${p.displayName}" /></span>
+              </a>
+              <j:forEach var="badge" items="${p.testActions}">
+                <st:include it="${badge}" page="badge.jelly" optional="true"/>
+              </j:forEach>
+            </td>
+            <td>
+              <span class="${p.failCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${p.failCount}</span>
+              <span class="jp-pill jenkins-!-margin-left-1">
+                ${h.getDiffString2(p.failCount-prev.failCount)}
+              </span>
+            </td>
+            <td>
+              <span class="${p.skipCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${p.skipCount}</span>
+              <span class="jp-pill jenkins-!-margin-left-1">
+                ${h.getDiffString2(p.skipCount-prev.skipCount)}
+              </span>
+            </td>
+            <td>
+              <span class="${p.passCount gt 0 ? '' : 'jenkins-!-text-color-secondary'}">${p.passCount}</span>
+              <span class="jp-pill jenkins-!-margin-left-1">
+                ${h.getDiffString2(p.passCount-prev.passCount)}
+              </span>
+            </td>
+            <td>
+              ${p.totalCount}
+              <span class="jp-pill jenkins-!-margin-left-1">
+                ${h.getDiffString2(p.totalCount-prev.totalCount)}
+              </span>
+            </td>
+            <j:forEach var="tablerow" items="${p.testActions}">
+              <st:include it="${tablerow}" page="tablerow.jelly" optional="true"/>
+            </j:forEach>
+            <td class="no-wrap" data="${p.duration}">
+              ${p.durationString}
+            </td>
+          </tr>
+        </j:forEach>
+      </tbody>
+    </table>
+    </f:section>
+  </j:if>
 </j:jelly>
