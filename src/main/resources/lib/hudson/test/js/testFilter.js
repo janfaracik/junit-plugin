@@ -3,30 +3,84 @@
  * the first time they're turned on, and the search hides the tests whose full name doesn't contain what's typed.
  */
 (function () {
-    const ACTIVE = 'jp-filter-item--active';
+    // Core's classes for its build history filter, so the menu looks and behaves the same
+    const MUTED = 'jenkins-search__filter-item--muted';
     // Set once the filters or search are changed, so an empty list before then isn't reported as having no matches
     let changed = false;
 
-    // The menu is built when it's first opened, so its items are handled here rather than when the page loads
-    document.addEventListener('click', (e) => {
-        const item = e.target.closest('.jp-filter-item');
-        if (!item) {
+    document.addEventListener('DOMContentLoaded', () => {
+        const button = document.querySelector('.jp-filter-button');
+        if (!button) {
             return;
         }
 
-        e.preventDefault();
-        const on = item.classList.toggle(ACTIVE);
-        item.setAttribute('aria-pressed', String(on));
-        changed = true;
+        // What the page shows to begin with (failures), which Reset goes back to
+        const initial = new Set(
+            Array.from(document.querySelectorAll('.jp-test-list:not([hidden])'), (list) => list.dataset.status));
+        let selected = new Set(initial);
 
-        const list = document.querySelector(`.jp-test-list[data-status="${item.id.replace('jp-filter-', '')}"]`);
-        if (list) {
-            list.hidden = !on;
-            if (on) {
-                load(list);
-            }
+        // The menu is built the first time it's opened and appended to the button's parent, so delegate from there
+        const dropdown = button.parentElement;
+
+        function statusOf(item) {
+            return item.id.replace('jp-filter-', '');
         }
-        applySearch();
+
+        function render() {
+            const filtered = selected.size !== initial.size || [...selected].some((status) => !initial.has(status));
+
+            dropdown.querySelectorAll('.jp-filter-item').forEach((item) => {
+                const isSelected = selected.has(statusOf(item));
+                item.classList.toggle(MUTED, selected.size > 0 && !isSelected);
+                item.setAttribute('aria-pressed', String(isSelected));
+            });
+
+            const reset = dropdown.querySelector('.jp-filter-reset');
+            if (reset) {
+                reset.classList.toggle('jenkins-hidden', !filtered);
+            }
+
+            button.classList.toggle('jenkins-button--tertiary', !filtered);
+            button.classList.toggle('jenkins-!-accent-color', filtered);
+
+            document.querySelectorAll('.jp-test-list[data-status]').forEach((list) => {
+                list.hidden = !selected.has(list.dataset.status);
+                if (!list.hidden) {
+                    load(list);
+                }
+            });
+            applySearch();
+        }
+
+        dropdown.addEventListener('click', (e) => {
+            const item = e.target.closest('.jp-filter-item, .jp-filter-reset');
+            if (!item) {
+                return;
+            }
+
+            // Dropdowns close on any click outside of their trigger, which is no use for a filter you pick several
+            // values from, so keep this one open
+            e.stopPropagation();
+            changed = true;
+
+            if (item.classList.contains('jp-filter-reset')) {
+                selected = new Set(initial);
+            } else if (selected.has(statusOf(item))) {
+                selected.delete(statusOf(item));
+            } else {
+                selected.add(statusOf(item));
+            }
+            render();
+        });
+
+        // The items only exist once the menu has been opened, so set their state as soon as they do
+        const observer = new MutationObserver(() => {
+            if (dropdown.querySelector('.jp-filter-item')) {
+                render();
+                observer.disconnect();
+            }
+        });
+        observer.observe(dropdown, {childList: true, subtree: true});
     });
 
     document.addEventListener('input', (e) => {

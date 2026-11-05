@@ -2,22 +2,6 @@
   margin-bottom: 1.125rem;
 }
 
-/* Filter menu: a check mark shows which statuses are listed */
-.jp-filter-item::after {
-  content: "";
-  width: 1rem;
-  height: 1rem;
-  margin-left: auto;
-  background: currentColor;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='48' d='M416 128L192 384l-96-96'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0;
-  transition: opacity var(--standard-transition);
-}
-
-.jp-filter-item--active::after {
-  opacity: 1;
-}
-
 /* Tests hidden by the filter or search, which the list's own display rules would otherwise show */
 .jp-test-lists [hidden] {
   display: none !important;

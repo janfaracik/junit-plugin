@@ -78,28 +78,37 @@ THE SOFTWARE.
 <!--              </l:overflowButton>-->
             </l:app-bar>
 
-            <!-- Each item turns its tests on or off in the list below, see testFilter.js -->
+            <!-- Each item turns its tests on or off in the list below, styled like core's build history filter.
+                 See testFilter.js -->
             <j:set var="filter">
               <l:overflowButton icon="symbol-filter-outline plugin-ionicons-api"
-                                clazz="jenkins-!-accent-color jp-filter-button"
+                                clazz="jenkins-button--tertiary jp-filter-button"
                                 tooltip="${%Filter}">
+                <dd:custom>
+                  <p class="jenkins-dropdown__heading">
+                    ${%Filter}
+                    <button type="button" class="jenkins-search__filter-reset jp-filter-reset jenkins-hidden">
+                      ${%Reset}
+                    </button>
+                  </p>
+                </dd:custom>
                 <j:if test="${it.failCount gt 0}">
                   <dd:item id="jp-filter-failed"
                            text="${%Failures(it.failCount)}"
                            icon="symbol-status-red"
-                           clazz="jp-filter-item jp-filter-item--active" />
+                           clazz="jenkins-search__filter-item jp-filter-item" />
                 </j:if>
                 <j:if test="${it.skipCount gt 0}">
                   <dd:item id="jp-filter-skipped"
                            text="${%Skipped(it.skipCount)}"
                            icon="symbol-status-disabled"
-                           clazz="jp-filter-item" />
+                           clazz="jenkins-search__filter-item jp-filter-item" />
                 </j:if>
                 <j:if test="${it.passCount gt 0}">
                   <dd:item id="jp-filter-passed"
                            text="${%Passing(it.passCount)}"
                            icon="symbol-status-blue"
-                           clazz="jp-filter-item" />
+                           clazz="jenkins-search__filter-item jp-filter-item" />
                 </j:if>
               </l:overflowButton>
             </j:set>
