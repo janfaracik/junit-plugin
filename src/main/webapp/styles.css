@@ -135,14 +135,7 @@ a.jp-table-row {
   border-radius: inherit;
   transition: background var(--standard-transition);
 
-  svg:last-of-type {
-    width: 1rem;
-    height: 1rem;
-    color: var(--text-color-secondary);
-    transition: rotate var(--standard-transition);
-  }
-
-  svg:first-of-type {
+  > svg:first-of-type {
     width: 1.25rem;
     height: 1.25rem;
     margin-right: 1rem;
@@ -155,16 +148,6 @@ a.jp-table-row {
     span {
       grid-area: 2 / 2;
       margin: 0 !important;
-    }
-
-    svg:last-of-type {
-      display: none;
-    }
-  }
-
-  &.active {
-    svg:last-of-type {
-      rotate: 90deg;
     }
   }
 }
@@ -268,10 +251,6 @@ a.jp-table-row {
 .squarecopy {
   aspect-ratio: 1;
   padding: 0;
-
-  &:not(:hover) {
-    color: var(--text-color-secondary) !important;
-  }
 }
 
 /* Notice needs to have overflow hidden to contain the confetti canvas */
@@ -370,6 +349,12 @@ h1 {
   @media (prefers-reduced-motion) {
     transition: none;
   }
+}
+
+/* Fills the height of the page frame, so its top right corner is rounded like the frame's too */
+.jp-test-panel--full-height {
+  top: var(--header-height, 3.5rem);
+  border-radius: 0 var(--form-input-border-radius, 0.6875rem) var(--form-input-border-radius, 0.6875rem) 0;
 }
 
 /* The panel's own buttons, at the top while a test result loads and then in its app bar */

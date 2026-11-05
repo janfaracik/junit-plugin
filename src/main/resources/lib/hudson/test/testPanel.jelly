@@ -34,9 +34,13 @@ THE SOFTWARE.
     <st:adjunct includes="lib.layout.copyButton.copyButton" />
     <st:adjunct includes="lib.hudson.test.copyAsPromptButton.copyAsPromptButton" />
 
+    <!-- the new build page has a bar across the top of the page frame, that the panel goes below; without it, the
+         panel fills the height of the frame -->
+    <l:userExperimentalFlag var="newBuildPage" flagClassName="jenkins.model.experimentalflags.NewBuildPageUserExperimentalFlag" />
+
     <!-- cloned by failureSummary.js the first time a row is clicked -->
     <template id="jp-test-panel-template">
-      <aside class="jp-test-panel" aria-label="${%Test result}" tabindex="-1" data-error-text="${%loadFailed}">
+      <aside class="jp-test-panel ${newBuildPage ? '' : 'jp-test-panel--full-height'}" aria-label="${%Test result}" tabindex="-1" data-error-text="${%loadFailed}">
         <!-- shown at the top while a test result loads, then moved into its app bar -->
         <div class="jp-test-panel__controls">
           <a class="jenkins-button jenkins-button--tertiary jp-icon-button jp-test-panel__open" tooltip="${%Open test result}">
