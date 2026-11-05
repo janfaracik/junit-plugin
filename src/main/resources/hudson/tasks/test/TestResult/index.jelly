@@ -35,6 +35,7 @@ THE SOFTWARE.
     <st:once>
       <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
       <st:adjunct includes="lib.hudson.test.js.failureSummary" />
+      <st:adjunct includes="lib.hudson.test.js.testFilter" />
     </st:once>
 
     <j:set var="prev" value="${it.previousResult}" />
@@ -77,22 +78,32 @@ THE SOFTWARE.
 <!--              </l:overflowButton>-->
             </l:app-bar>
 
+            <!-- Each item turns its tests on or off in the list below, see testFilter.js -->
             <j:set var="filter">
               <l:overflowButton icon="symbol-filter-outline plugin-ionicons-api"
-                                clazz="jenkins-!-accent-color"
-                                tooltip="Filter">
-                <dd:item text="${%Failures}"
-                         icon="symbol-status-red"
-                         href="history" />
-                <dd:item text="${%Skipped}"
-                         icon="symbol-status-disabled"
-                         href="history" />
-                <dd:item text="${%Passing}"
-                         icon="symbol-status-blue"
-                         href="history" />
+                                clazz="jenkins-!-accent-color jp-filter-button"
+                                tooltip="${%Filter}">
+                <j:if test="${it.failCount gt 0}">
+                  <dd:item id="jp-filter-failed"
+                           text="${%Failures(it.failCount)}"
+                           icon="symbol-status-red"
+                           clazz="jp-filter-item jp-filter-item--active" />
+                </j:if>
+                <j:if test="${it.skipCount gt 0}">
+                  <dd:item id="jp-filter-skipped"
+                           text="${%Skipped(it.skipCount)}"
+                           icon="symbol-status-disabled"
+                           clazz="jp-filter-item" />
+                </j:if>
+                <j:if test="${it.passCount gt 0}">
+                  <dd:item id="jp-filter-passed"
+                           text="${%Passing(it.passCount)}"
+                           icon="symbol-status-blue"
+                           clazz="jp-filter-item" />
+                </j:if>
               </l:overflowButton>
             </j:set>
-            <l:search-bar clazz="jp-search" charms="${filter}" />
+            <l:search-bar clazz="jp-search" charms="${filter}" placeholder="${%Search tests}" />
 
 <!--            <div style="display: grid; grid-template-columns: 1fr auto; margin-bottom: var(&#45;&#45;section-padding); margin-top: -0.5rem">-->
 <!--              <div class="jenkins-details">-->
