@@ -39,10 +39,10 @@ THE SOFTWARE.
       <aside class="jp-test-panel" aria-label="${%Test result}" tabindex="-1" data-error-text="${%loadFailed}">
         <!-- shown at the top while a test result loads, then moved into its app bar -->
         <div class="jp-test-panel__controls">
-          <a class="jenkins-button jenkins-button--tertiary jp-test-panel__open" tooltip="${%Open test result}">
+          <a class="jenkins-button jenkins-button--tertiary jp-icon-button jp-test-panel__open" tooltip="${%Open test result}">
             <l:icon src="symbol-open-outline plugin-ionicons-api" />
           </a>
-          <button type="button" class="jenkins-button jenkins-button--tertiary jp-test-panel__close" tooltip="${%Close}">
+          <button type="button" class="jenkins-button jenkins-button--tertiary jp-icon-button jp-test-panel__close" tooltip="${%Close}">
             <l:icon src="symbol-close-outline plugin-ionicons-api" />
           </button>
         </div>

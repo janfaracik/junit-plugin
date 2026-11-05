@@ -85,26 +85,20 @@ THE SOFTWARE.
 
     <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
 
-    <div class="jenkins-app-bar jenkins-app-bar--with-icon">
-        <div class="jenkins-app-bar__content">
-            <l:icon src="${it.iconFileName}" />
-            <h1>
-                <span>
-                    ${it.displayName}
-                </span>
-                <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2 jenkins-!-margin-right-1">
-                    ${it.className}
-                </span>
-
-                <l:copyButton text="${it.className}#${it.displayName}"
-                              clazz="squarecopy"
-                              iconOnly="true"
-                              tooltip="Copy ${it.className}#${it.displayName}" />
-            </h1>
-        </div>
+    <div class="jp-test-header">
+        <l:icon src="${it.iconFileName}" class="jp-test-header__icon" />
+        <!-- kept to one line, so the full name is in the title too -->
+        <h1 class="jp-test-header__title" title="${it.displayName} ${it.className}">
+            <span>${it.displayName}</span>
+            <span class="jp-test-header__class-name">${it.className}</span>
+        </h1>
+        <l:copyButton text="${it.className}#${it.displayName}"
+                      clazz="squarecopy"
+                      iconOnly="true"
+                      tooltip="Copy ${it.className}#${it.displayName}" />
         <!-- the panel on the test report puts its own buttons here, see failureSummary.js -->
         <j:if test="${inTestPanel}">
-            <div class="jenkins-app-bar__controls jp-test-panel__controls-slot" />
+            <div class="jp-test-panel__controls-slot" />
         </j:if>
     </div>
 
@@ -114,7 +108,7 @@ THE SOFTWARE.
         </j:if>
         <a tooltip="${%History}"
            href="history"
-           class="jenkins-button">
+           class="jenkins-button jp-icon-button">
             <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
         </a>
     </div>

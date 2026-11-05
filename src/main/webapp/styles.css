@@ -353,7 +353,7 @@ h1 {
   box-shadow: var(--elevation-3-box-shadow, 0 0 2rem rgb(0 0 0 / 0.2));
   outline: none;
   transition-property: opacity, translate, visibility;
-  /* decelerates in */
+  /* decelerates both ways, so it moves as soon as it's opened or closed rather than lagging and then snapping */
   transition-duration: 0.25s;
   transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 
@@ -363,9 +363,8 @@ h1 {
     translate: 1rem 0;
     visibility: hidden;
     pointer-events: none;
-    /* and accelerates out, more quickly, so closing doesn't linger */
-    transition-duration: 0.15s;
-    transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    /* and a little more quickly when closing, so it doesn't linger */
+    transition-duration: 0.2s;
   }
 
   @media (prefers-reduced-motion) {
@@ -384,17 +383,6 @@ h1 {
   padding: 0.5rem 0.5rem 0;
 }
 
-/* Keeps the panel's buttons at the top right of the app bar, with long test names wrapping beside them */
-.jp-test-panel .jenkins-app-bar {
-  flex-wrap: nowrap;
-  align-items: flex-start;
-}
-
-.jp-test-panel .jenkins-app-bar__content {
-  flex: 1;
-  min-width: 0;
-}
-
 .jp-test-panel__controls-slot {
   flex-shrink: 0;
   margin-left: auto;
@@ -403,10 +391,55 @@ h1 {
 .jp-test-panel__content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--section-padding);
+  /* the header is as far from the top as the app bar of core's build page, so the two line up */
+  padding: 0.875rem var(--section-padding) var(--section-padding);
 }
 
-/* The buttons that were in the test result's app bar, in a row below it */
+/* The test result's header: its status, name and class name on one line, cut short if they don't fit */
+.jp-test-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  margin-bottom: 0.875rem;
+}
+
+.jp-test-header__icon {
+  flex-shrink: 0;
+  width: 2rem !important;
+  height: 2rem !important;
+  margin-left: -0.1875rem;
+  margin-right: 0.375rem;
+}
+
+.jp-test-header__title {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 1.1875rem;
+  font-weight: 550;
+}
+
+.jp-test-header__class-name {
+  margin-left: 0.5ch;
+  color: var(--text-color-secondary);
+}
+
+.jp-test-header .squarecopy {
+  flex-shrink: 0;
+}
+
+/* Icon only buttons, as wide as they are tall */
+.jp-icon-button {
+  width: 2.375rem;
+  min-width: 2.375rem;
+  padding: 0 !important;
+}
+
+/* The buttons that were in the test result's header, in a row below it */
 .jp-test-actions {
   display: flex;
   flex-wrap: wrap;
@@ -422,7 +455,11 @@ tr.jp-test-row--clickable {
   cursor: pointer;
 }
 
-/* The row whose test result is in the panel */
+/* The row whose test result is in the panel, highlighted in step with the panel opening and closing */
+tr.jp-test-row--clickable > td {
+  transition: background var(--standard-transition);
+}
+
 tr[data-type="test-row"].jp-test-row--active > td {
   background: var(--item-background--hover, color-mix(in sRGB, currentColor 5%, transparent));
 }
