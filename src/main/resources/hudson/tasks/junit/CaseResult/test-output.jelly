@@ -102,16 +102,21 @@ THE SOFTWARE.
                               tooltip="Copy ${it.className}#${it.displayName}" />
             </h1>
         </div>
-        <div class="jenkins-app-bar__controls">
-            <j:if test="${!empty copyAsPrompt}">
-                <t:copyAsPromptButton text="${copyAsPrompt}" />
-            </j:if>
-            <a tooltip="${%History}"
-               href="history"
-               class="jenkins-button">
-                <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
-            </a>
-        </div>
+        <!-- the panel on the test report puts its own buttons here, see failureSummary.js -->
+        <j:if test="${inTestPanel}">
+            <div class="jenkins-app-bar__controls jp-test-panel__controls-slot" />
+        </j:if>
+    </div>
+
+    <div class="jp-test-actions">
+        <j:if test="${!empty copyAsPrompt}">
+            <t:copyAsPromptButton text="${copyAsPrompt}" />
+        </j:if>
+        <a tooltip="${%History}"
+           href="history"
+           class="jenkins-button">
+            <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
+        </a>
     </div>
 
     <div class="jenkins-details" style="margin-top: -0.5rem; margin-bottom: calc(var(--section-padding) + 0.375rem)">

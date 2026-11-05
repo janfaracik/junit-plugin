@@ -74,6 +74,8 @@ function initializeLazySections() {
 }
 
 let panel = null;
+// The panel's own buttons, which move into each test result's app bar once it has loaded
+let panelControls = null;
 let activeLink = null;
 
 /**
@@ -113,6 +115,7 @@ function getPanel() {
     document.body.appendChild(panel);
     Behaviour.applySubtree(panel, true);
 
+    panelControls = panel.querySelector('.jp-test-panel__controls');
     panel.querySelector('.jp-test-panel__close').addEventListener('click', closePanel);
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && panel.classList.contains('jp-test-panel--open')) {
@@ -129,9 +132,9 @@ function closePanel() {
     panel.classList.remove('jp-test-panel--open');
     const link = activeLink;
     setActiveLink(null);
-    // give focus back to where it came from, for keyboard users
+    // give focus back to where it came from, for keyboard users, without scrolling the page while it closes
     if (link && panel.contains(document.activeElement)) {
-        link.focus();
+        link.focus({preventScroll: true});
     }
 }
 
@@ -152,6 +155,7 @@ function loadSummary(element, query) {
             return;
         }
         element.innerHTML = CACHE[query];
+        placeControls(element);
         element.scrollTop = 0;
         element.querySelectorAll("code").forEach(code => {
             Prism.highlightElement(code);
@@ -166,6 +170,7 @@ function loadSummary(element, query) {
     }
 
     element.innerHTML = '<span class="jenkins-spinner"></span>';
+    placeControls(element);
     fetch(query)
         .then(rsp => {
             if (!rsp.ok) {
@@ -180,8 +185,22 @@ function loadSummary(element, query) {
         .catch(() => {
             if (element.dataset.query === query) {
                 element.textContent = panel.dataset.errorText;
+                placeControls(element);
             }
         });
+}
+
+/**
+ * Puts the panel's buttons in the test result's app bar, or at the top of the panel while there's no test result to
+ * show, e.g. while it loads
+ */
+function placeControls(content) {
+    const slot = content.querySelector('.jp-test-panel__controls-slot');
+    if (slot) {
+        slot.append(panelControls);
+    } else {
+        panel.prepend(panelControls);
+    }
 }
 
 function tryShowConfetti() {
