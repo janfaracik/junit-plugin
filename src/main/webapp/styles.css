@@ -248,11 +248,6 @@ a.jp-table-row {
   height: unset !important;
 }
 
-.squarecopy {
-  aspect-ratio: 1;
-  padding: 0;
-}
-
 /* Notice needs to have overflow hidden to contain the confetti canvas */
 .jenkins-notice {
   position: relative;
@@ -329,6 +324,7 @@ h1 {
   background-color: color-mix(in sRGB, var(--elevation-3-background) 85%, transparent);
   backdrop-filter: contrast(1.1) saturate(2.5) blur(20px);
   border: none;
+  border-top: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
   border-left: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
   /* follows the rounded top right corner of core's page frame, which reaches the edges of the screen on mobile */
   border-top-right-radius: var(--form-input-border-radius, 0.6875rem);
@@ -402,13 +398,8 @@ h1 {
   gap: 0.25rem;
 }
 
-.jp-test-panel > .jp-test-panel__controls {
-  padding: 0.5rem 0.5rem 0;
-}
-
 .jp-test-panel__controls-slot {
   flex-shrink: 0;
-  margin-left: auto;
 }
 
 .jp-test-panel__content {
@@ -462,8 +453,13 @@ h1 {
   font-weight: 550;
 }
 
-.jp-test-header .squarecopy {
+/* The test result's buttons, on the right of the header */
+.jp-test-header__actions {
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
+  gap: 0.5rem;
+  margin-left: auto;
 }
 
 /* Icon only buttons, as wide as they are tall */
@@ -471,14 +467,6 @@ h1 {
   width: 2.375rem;
   min-width: 2.375rem;
   padding: 0 !important;
-}
-
-/* The buttons that were in the test result's header, in a row below it */
-.jp-test-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: calc(var(--section-padding) / 2);
 }
 
 tr.jp-test-row--clickable {

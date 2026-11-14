@@ -90,7 +90,6 @@ function togglePanel(link) {
 
     const opened = getPanel();
     setActiveLink(link);
-    opened.querySelector('.jp-test-panel__open').href = link.href;
 
     const content = opened.querySelector('.jp-test-panel__content');
     const id = link.id.replace(/-showlink$/, '');
@@ -199,12 +198,17 @@ function loadSummary(element, query) {
 }
 
 /**
- * Puts the panel's buttons in the test result's app bar, or at the top of the panel while there's no test result to
- * show, e.g. while it loads
+ * Puts the panel's buttons in the test result's header, or leaves them out while there's no test result to show
  */
 function placeControls(content) {
     const slot = content.querySelector('.jp-test-panel__controls-slot');
-    slot.append(panelControls);
+    // there's no header while a test result loads, or if it fails to, when the panel can still be closed with
+    // Escape or by clicking outside of it
+    if (slot) {
+        slot.append(panelControls);
+    } else {
+        panelControls.remove();
+    }
 }
 
 function tryShowConfetti() {

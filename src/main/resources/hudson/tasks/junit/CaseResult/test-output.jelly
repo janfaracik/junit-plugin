@@ -92,25 +92,25 @@ THE SOFTWARE.
             <span class="jp-test-header__class-name">${it.className}</span>
             <span class="jp-test-header__name">${it.displayName}</span>
         </h1>
-        <!-- the panel on the test report puts its own buttons here, see failureSummary.js -->
-        <j:if test="${inTestPanel}">
-            <div class="jp-test-panel__controls-slot" />
-        </j:if>
-    </div>
-
-    <div class="jp-test-actions">
-        <l:copyButton text="${it.className}#${it.displayName}"
-                      clazz="squarecopy"
-                      iconOnly="true"
-                      tooltip="Copy ${it.className}#${it.displayName}" />
-        <j:if test="${!empty copyAsPrompt}">
-            <t:copyAsPromptButton text="${copyAsPrompt}" />
-        </j:if>
-        <a tooltip="${%History}"
-           href="history"
-           class="jenkins-button jp-icon-button">
-            <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
-        </a>
+        <div class="jp-test-header__actions">
+            <!-- not iconOnly, which would make it a tertiary button without a background; it has no label, so only
+                 its icon shows anyway -->
+            <l:copyButton text="${it.className}#${it.displayName}"
+                          clazz="jp-icon-button"
+                          tooltip="Copy ${it.className}#${it.displayName}" />
+            <j:if test="${!empty copyAsPrompt}">
+                <t:copyAsPromptButton text="${copyAsPrompt}" />
+            </j:if>
+            <a tooltip="${%History}"
+               href="history"
+               class="jenkins-button jp-icon-button">
+                <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
+            </a>
+            <!-- the panel on the test report puts its own buttons here, see failureSummary.js -->
+            <j:if test="${inTestPanel}">
+                <div class="jp-test-panel__controls-slot" />
+            </j:if>
+        </div>
     </div>
 
     <div class="jenkins-details" style="margin-top: -0.5rem; margin-bottom: calc(var(--section-padding) + 0.375rem)">
