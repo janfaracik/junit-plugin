@@ -244,11 +244,6 @@ a.jp-table-row {
   }
 }
 
-/* Remove the fixed height from the table foldout */
-.failure-summary {
-  height: unset !important;
-}
-
 /* Notice needs to have overflow hidden to contain the confetti canvas */
 .jenkins-notice {
   position: relative;
@@ -263,7 +258,7 @@ a.jp-table-row {
   }
 }
 
-/* Package names in the app bar don't break */
+/* Long headings, such as package names, break rather than overflowing */
 h1 {
   word-break: break-word;
 }
@@ -294,7 +289,6 @@ h1 {
 .jp-code-card .jp-code--wrap,
 .jp-code-card .jp-code--wrap code {
   white-space: pre-wrap;
-  word-break: break-word;
   overflow-wrap: anywhere;
 }
 
@@ -347,7 +341,7 @@ h1 {
       animation:
         jp-fade-at-start linear both,
         jp-fade-at-end linear both;
-      animation-timeline: scroll(self inline), scroll(self inline);
+      animation-timeline: scroll(self inline);
       animation-range:
         0% var(--section-padding),
         calc(100% - var(--section-padding)) 100%;
@@ -389,9 +383,6 @@ h1 {
   width: min(85vw, max(760px, 60vw), 1200px);
   background-color: color-mix(in sRGB, var(--body-background-top) 95%, transparent);
   backdrop-filter: saturate(2.5) blur(20px);
-  /*border: var(--jenkins-border);*/
-  /* follows the rounded top right corner of core's page frame, which reaches the edges of the screen on mobile */
-  border-top-right-radius: var(--form-input-border-radius, 0.6875rem);
   outline: none;
   border: var(--jenkins-border);
   border-left: 1px solid color-mix(in sRGB, var(--white) 15%, transparent);
@@ -399,11 +390,13 @@ h1 {
     translate var(--standard-transition),
     box-shadow var(--standard-transition),
     display var(--standard-transition) allow-discrete;
+  /* where it slides in from and back out to, which each layout below sets */
+  --jp-panel-offset: 100% 0;
 
   /* not displayed once it has slid out, which hides it from assistive technologies too */
   &:not(.jp-test-panel--open) {
     display: none;
-    translate: 100% 0;
+    translate: var(--jp-panel-offset);
     box-shadow:
       var(--elevation-3-box-shadow),
       0 0 0 100vmax transparent;
@@ -416,7 +409,7 @@ h1 {
       0 0 0 100vmax color-mix(in sRGB, var(--background) 40%, transparent);
 
     @starting-style {
-      translate: 100% 0;
+      translate: var(--jp-panel-offset);
       box-shadow:
         var(--elevation-3-box-shadow),
         0 0 0 100vmax transparent;
@@ -439,16 +432,7 @@ h1 {
     /* just a top edge, in the white that core's overlay surfaces use for theirs */
     border: none;
     border-top: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
-
-    &:not(.jp-test-panel--open) {
-      translate: 0 100%;
-    }
-
-    &.jp-test-panel--open {
-      @starting-style {
-        translate: 0 100%;
-      }
-    }
+    --jp-panel-offset: 0 100%;
   }
 
   /* On larger screens, it fits inside core's page frame, with the frame's inset and its right corners rounded */
@@ -456,22 +440,13 @@ h1 {
     right: var(--page-inset, 0.3125rem);
     bottom: var(--page-inset, 0.3125rem);
     border-radius: 0 var(--form-input-border-radius, 0.6875rem) var(--form-input-border-radius, 0.6875rem) 0;
-
     /* slides fully out of view, past the inset */
-    &:not(.jp-test-panel--open) {
-      translate: calc(100% + var(--page-inset, 0.3125rem)) 0;
-    }
-
-    &.jp-test-panel--open {
-      @starting-style {
-        translate: calc(100% + var(--page-inset, 0.3125rem)) 0;
-      }
-    }
+    --jp-panel-offset: calc(100% + var(--page-inset, 0.3125rem)) 0;
 
     /* the new build page's bar of tabs stays visible, so only the bottom corner is rounded (the bar isn't sticky on
        smaller screens, so it's covered there like the rest of the page) */
     &.jp-test-panel--below-build-bar {
-      top: calc(2 * var(--header-height, 3.5rem) + 1px);
+      top: calc(2 * var(--header-height, 3.5rem) + var(--jenkins-border-width));
       border-top: none;
       border-top-right-radius: 0;
       /* cuts the shadow that dims the page off at the panel's top edge, so the bar isn't dimmed either (it can't be
@@ -481,7 +456,7 @@ h1 {
   }
 }
 
-/* The panel's own buttons, at the top while a test result loads and then in its app bar */
+/* The panel's own buttons, which go in the header of each test result it shows */
 .jp-test-panel__controls {
   display: flex;
   justify-content: flex-end;
@@ -507,7 +482,7 @@ h1 {
   padding: 0.875rem var(--section-padding) var(--section-padding);
 }
 
-/* The test result's header: its status, name and class name on one line, cut short if they don't fit */
+/* The test result's header: its status, its class and test names, and its buttons */
 .jp-test-header {
   display: flex;
   align-items: center;
@@ -646,6 +621,11 @@ h1 {
   }
 }
 
+/* The test result's status, streak and duration, below its header */
+.jp-test-details {
+  margin-bottom: var(--section-padding);
+}
+
 /* Icon only buttons, as wide as they are tall */
 .jp-icon-button {
   width: 2.375rem;
@@ -653,12 +633,12 @@ h1 {
   padding: 0 !important;
 }
 
-tr.jp-test-row--clickable {
+tr[data-type="test-row"]:has([id$="-showlink"]) {
   cursor: pointer;
 }
 
 /* The row whose test result is in the panel, highlighted in step with the panel opening and closing */
-tr.jp-test-row--clickable > td {
+tr[data-type="test-row"] > td {
   transition: background var(--standard-transition);
 }
 

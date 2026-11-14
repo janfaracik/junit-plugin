@@ -127,7 +127,7 @@ THE SOFTWARE.
         </j:if>
     </div>
 
-    <div class="jenkins-details" style="margin-bottom: var(--section-padding)">
+    <div class="jenkins-details jp-test-details">
         <t:condition-tag test="${it}" />
 
         <j:if test="${!it.passed and it.age != 0}">

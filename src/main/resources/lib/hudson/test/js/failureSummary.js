@@ -2,41 +2,43 @@ const PREFIX = "test-";
 const CACHE = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeShowHideLinks(document);
     initializeLazySections();
     tryShowConfetti();
 });
 
-function initializeShowHideLinks(root) {
-    root.querySelectorAll('[id$="-showlink"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            // On pages without the panel, the link goes to the test result's page
-            if (!document.getElementById('jp-test-panel-template')) {
-                return;
-            }
-
-            // Let the browser handle modifier clicks, e.g. ctrl/cmd-click to open in a new tab
-            if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
-                return;
-            }
-
-            e.preventDefault();
-            togglePanel(e.currentTarget);
-        });
-
-        // The rest of the row opens it too, apart from its own links and buttons, or when selecting its text
-        const row = link.closest('tr[data-type="test-row"]');
-        if (row) {
-            row.classList.add('jp-test-row--clickable');
-            row.addEventListener('click', (e) => {
-                if (e.target.closest('a, button, input') || window.getSelection().toString()) {
-                    return;
-                }
-                link.click();
-            });
-        }
-    });
+/**
+ * The link to the test result of the test table row that the target is in, if any
+ */
+function testLinkFor(target) {
+    return target.closest('tr[data-type="test-row"]')?.querySelector('[id$="-showlink"]');
 }
+
+// One listener for every test table row, including those in sections loaded later: clicking a test's link, or anywhere
+// else on its row apart from its other links and buttons, shows its test result in the panel
+document.addEventListener('click', (e) => {
+    const link = testLinkFor(e.target);
+    const control = e.target.closest('a, button, input');
+    if (!link || (control && control !== link)) {
+        return;
+    }
+
+    // Let the browser handle modifier clicks, e.g. ctrl/cmd-click to open in a new tab, and leave text being selected
+    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey ||
+        (!control && window.getSelection().toString())) {
+        return;
+    }
+
+    // On pages without the panel, the row goes to the test result's page
+    if (!document.getElementById('jp-test-panel-template')) {
+        if (!control) {
+            link.click();
+        }
+        return;
+    }
+
+    e.preventDefault();
+    togglePanel(link);
+});
 
 function initializeLazySections() {
     document.querySelectorAll('details[data-lazy-url]').forEach(details => {
@@ -62,7 +64,6 @@ function initializeLazySections() {
                     }
                     content.replaceChildren(template.content);
                     Behaviour.applySubtree(content, true);
-                    initializeShowHideLinks(content);
                 })
                 .catch(() => {
                     // allow another attempt the next time the section is opened
@@ -74,7 +75,7 @@ function initializeLazySections() {
 }
 
 let panel = null;
-// The panel's own buttons, which move into each test result's app bar once it has loaded
+// The panel's own buttons, which move into each test result's header once it has loaded
 let panelControls = null;
 let activeLink = null;
 
@@ -83,7 +84,7 @@ let activeLink = null;
  * already showing it
  */
 function togglePanel(link) {
-    if (link === activeLink && panel && panel.classList.contains('jp-test-panel--open')) {
+    if (link === activeLink && panel.classList.contains('jp-test-panel--open')) {
         closePanel();
         return;
     }
@@ -122,7 +123,7 @@ function getPanel() {
     // row, which shows that test instead
     document.addEventListener('click', (e) => {
         if (!panel.classList.contains('jp-test-panel--open') || panel.contains(e.target) ||
-            e.target.closest('tr.jp-test-row--clickable')) {
+            testLinkFor(e.target)) {
             return;
         }
         e.preventDefault();
@@ -133,9 +134,6 @@ function getPanel() {
 }
 
 function closePanel() {
-    if (!panel) {
-        return;
-    }
     panel.classList.remove('jp-test-panel--open');
     const link = activeLink;
     setActiveLink(null);
