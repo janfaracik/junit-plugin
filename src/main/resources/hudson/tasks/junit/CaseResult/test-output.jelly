@@ -45,8 +45,9 @@ THE SOFTWARE.
                             <j:otherwise>
                                 <!-- messages wrap, as they read like sentences with the important part often at the end; other output
                                      keeps its lines, so on mobile it scrolls sideways -->
+                                <!-- every block has a language, even if it's none, so Prism styles them all alike -->
                                 <pre class="jdl-component-code__code ${wrap ? 'jp-code--wrap' : ''}">
-                                    <code class="${it.isJavaStackTrace(value) ? 'language-javastacktrace' : null}">
+                                    <code class="${it.isJavaStackTrace(value) ? 'language-javastacktrace' : 'language-none'}">
                                         ${value.trim()}
                                     </code>
                                 </pre>
