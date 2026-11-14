@@ -328,6 +328,12 @@ h1 {
   border-top-right-radius: var(--form-input-border-radius, 0.6875rem);
   outline: none;
   border: var(--jenkins-border);
+  border-left: 1px solid color-mix(in sRGB, var(--white) 15%, transparent);
+  /* core's elevation 3 shadow, cast to the left rather than down, and only to the left: its negative spread keeps it
+     from showing above, below or to the right */
+  --jp-test-panel-shadow:
+    -15px 0 40px -15px color-mix(in sRGB, var(--black) 15%, transparent),
+    -2px 0 8px -2px color-mix(in sRGB, var(--black) 7.5%, transparent);
   transition:
     translate var(--standard-transition),
     box-shadow var(--standard-transition),
@@ -338,20 +344,20 @@ h1 {
     display: none;
     translate: 100% 0;
     box-shadow:
-      /*var(--elevation-3-box-shadow),*/
+      var(--jp-test-panel-shadow),
       0 0 0 100vmax transparent;
   }
 
   &.jp-test-panel--open {
     translate: 0 0;
     box-shadow:
-      /*var(--elevation-3-box-shadow),*/
+      var(--jp-test-panel-shadow),
       0 0 0 100vmax color-mix(in sRGB, var(--background) 40%, transparent);
 
     @starting-style {
       translate: 100% 0;
       box-shadow:
-        /*var(--elevation-3-box-shadow),*/
+        var(--jp-test-panel-shadow),
         0 0 0 100vmax transparent;
     }
   }
@@ -459,6 +465,23 @@ h1 {
   flex-shrink: 0;
   gap: 0.5rem;
   margin-left: auto;
+}
+
+/* On mobile, the buttons go on a row of their own below the names, which would otherwise have no room */
+@media (width < 740px) {
+  .jp-test-header {
+    flex-wrap: wrap;
+  }
+
+  .jp-test-header__title {
+    flex: 1 1 0;
+  }
+
+  .jp-test-header__actions {
+    flex-wrap: wrap;
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 /* Icon only buttons, as wide as they are tall */

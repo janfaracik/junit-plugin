@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeShowHideLinks(root) {
     root.querySelectorAll('[id$="-showlink"]').forEach(link => {
         link.addEventListener('click', (e) => {
-            // On small screens, and on pages without the panel, the link goes to the test result's page
-            if (window.innerWidth <= 800 || !document.getElementById('jp-test-panel-template')) {
+            // On pages without the panel, the link goes to the test result's page
+            if (!document.getElementById('jp-test-panel-template')) {
                 return;
             }
 
