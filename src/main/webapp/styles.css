@@ -211,6 +211,7 @@ a.jp-table-row {
     pre {
       background: none;
       border: none;
+      box-shadow: none;
       padding: 0;
       margin-top: 0.5rem;
       margin-bottom: 0;
