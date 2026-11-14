@@ -321,14 +321,13 @@ h1 {
   display: flex;
   flex-direction: column;
   width: min(760px, 85vw);
-  background-color: color-mix(in sRGB, var(--elevation-3-background) 85%, transparent);
-  backdrop-filter: contrast(1.1) saturate(2.5) blur(20px);
-  border: none;
-  border-top: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
-  border-left: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
+  background-color: color-mix(in sRGB, var(--body-background-top) 95%, transparent);
+  backdrop-filter: saturate(2.5) blur(20px);
+  /*border: var(--jenkins-border);*/
   /* follows the rounded top right corner of core's page frame, which reaches the edges of the screen on mobile */
   border-top-right-radius: var(--form-input-border-radius, 0.6875rem);
   outline: none;
+  border: var(--jenkins-border);
   transition:
     translate var(--standard-transition),
     box-shadow var(--standard-transition),
@@ -339,20 +338,20 @@ h1 {
     display: none;
     translate: 100% 0;
     box-shadow:
-      var(--elevation-3-box-shadow),
+      /*var(--elevation-3-box-shadow),*/
       0 0 0 100vmax transparent;
   }
 
   &.jp-test-panel--open {
     translate: 0 0;
     box-shadow:
-      var(--elevation-3-box-shadow),
+      /*var(--elevation-3-box-shadow),*/
       0 0 0 100vmax color-mix(in sRGB, var(--background) 40%, transparent);
 
     @starting-style {
       translate: 100% 0;
       box-shadow:
-        var(--elevation-3-box-shadow),
+        /*var(--elevation-3-box-shadow),*/
         0 0 0 100vmax transparent;
     }
   }
@@ -365,7 +364,6 @@ h1 {
   @media (width >= 740px) {
     right: var(--page-inset, 0.3125rem);
     bottom: var(--page-inset, 0.3125rem);
-    border: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
     border-radius: 0 var(--form-input-border-radius, 0.6875rem) var(--form-input-border-radius, 0.6875rem) 0;
 
     /* slides fully out of view, past the inset */
@@ -382,7 +380,8 @@ h1 {
     /* the new build page's bar of tabs stays visible, so only the bottom corner is rounded (the bar isn't sticky on
        smaller screens, so it's covered there like the rest of the page) */
     &.jp-test-panel--below-build-bar {
-      top: calc(2 * var(--header-height, 3.5rem));
+      top: calc(2 * var(--header-height, 3.5rem) + 1px);
+      border-top: none;
       border-top-right-radius: 0;
       /* cuts the shadow that dims the page off at the panel's top edge, so the bar isn't dimmed either (it can't be
          put above the panel, as core isolates the page body it's in) */
@@ -415,7 +414,7 @@ h1 {
   align-items: center;
   gap: 0.5rem;
   min-height: 2.5rem;
-  margin-bottom: 0.875rem;
+  margin-bottom: var(--section-padding);
 }
 
 .jp-test-header__icon {
