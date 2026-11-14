@@ -366,6 +366,32 @@ h1 {
     transition: none;
   }
 
+  /* On mobile, it's a sheet that fills the width of the screen and slides up from the bottom, leaving some of the page
+     showing above it, with rounded top corners */
+  @media (width < 740px) {
+    top: calc(2 * var(--header-height, 3.5rem));
+    width: 100%;
+    /* as round as the top corners of the page on mobile, from --header-corner-radius in core, which is only set on its
+       header */
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    border: none;
+    /* casts its shadow up instead, over the page it slides up over */
+    --jp-test-panel-shadow:
+      0 -15px 40px -15px color-mix(in sRGB, var(--black) 15%, transparent),
+      0 -2px 8px -2px color-mix(in sRGB, var(--black) 7.5%, transparent);
+
+    &:not(.jp-test-panel--open) {
+      translate: 0 100%;
+    }
+
+    &.jp-test-panel--open {
+      @starting-style {
+        translate: 0 100%;
+      }
+    }
+  }
+
   /* On larger screens, it fits inside core's page frame, with the frame's inset and its right corners rounded */
   @media (width >= 740px) {
     right: var(--page-inset, 0.3125rem);
@@ -433,17 +459,65 @@ h1 {
 /* The class name, with the test's name below it, each on one line and cut short if it doesn't fit */
 .jp-test-header__title {
   display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
   flex: 0 1 auto;
   min-width: 0;
   margin: 0;
+}
+
+/* The names, which copy themselves when clicked */
+.jp-test-header__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  background: none;
+  border: none;
+  border-radius: 0.25rem;
+  color: var(--text-color);
+  font: inherit;
   line-height: 1.2;
+  text-align: start;
+  cursor: pointer;
+  transition: color var(--standard-transition);
 
   > span {
+    max-width: 100%;
+  }
+
+  .jp-test-header__class-name,
+  /* The test's name, with a small copy icon after it that stays visible when the name is cut short */
+.jp-test-header__name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+
+  .jenkins-copy-button__icon {
+    flex-shrink: 0;
+    scale: 0.75;
+    /* centred on the middle of the name's lowercase letters, which most of it is, rather than its capitals */
+    translate: 0 1px;
+    color: var(--text-color-secondary);
+  }
+}
+
+.jp-test-header__name {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  /* only the icon changes once they're copied, rather than the names turning green too */
+  &.jenkins-copy-button--copied {
+    color: var(--text-color) !important;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-input-border, var(--accent-color));
+    outline-offset: 2px;
   }
 }
 
@@ -478,6 +552,8 @@ h1 {
   }
 
   .jp-test-header__actions {
+    /* after the panel's buttons, so they stay at the top right */
+    order: 1;
     flex-wrap: wrap;
     width: 100%;
     margin-left: 0;
