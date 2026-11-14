@@ -176,7 +176,7 @@ function loadSummary(element, query) {
         return;
     }
 
-    element.innerHTML = '<span class="jenkins-spinner"></span>';
+    element.innerHTML = '<div class="jp-test-panel__loading"><span class="jenkins-spinner"></span></div>';
     placeControls(element);
     fetch(query)
         .then(rsp => {
