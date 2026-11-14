@@ -289,6 +289,14 @@ h1 {
   }
 }
 
+/* Error and skip messages always wrap, on mobile too */
+.jp-code-card .jp-code--wrap,
+.jp-code-card .jp-code--wrap code {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
 /* On mobile, where the test output scrolls sideways rather than wrapping, it fades out over 30px at either side that
    there's more to scroll to, with nothing showing in the section padding's worth at the edge. Each fade comes and goes
    over the first and last section padding's worth of scrolling, and neither is there when the output fits */

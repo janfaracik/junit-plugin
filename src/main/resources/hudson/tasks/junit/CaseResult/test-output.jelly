@@ -43,7 +43,9 @@ THE SOFTWARE.
                                 </div>
                             </j:when>
                             <j:otherwise>
-                                <pre class="jdl-component-code__code">
+                                <!-- messages wrap, as they read like sentences with the important part often at the end; other output
+                                     keeps its lines, so on mobile it scrolls sideways -->
+                                <pre class="jdl-component-code__code ${wrap ? 'jp-code--wrap' : ''}">
                                     <code class="${it.isJavaStackTrace(value) ? 'language-javastacktrace' : null}">
                                         ${value.trim()}
                                     </code>
@@ -87,14 +89,12 @@ THE SOFTWARE.
 
     <div class="jp-test-header">
         <l:icon src="${it.iconFileName}" class="jp-test-header__icon" />
-        <!-- clicking the names copies them, using core's copy button script; each is kept to one line, so the full names
-             are in its tooltip -->
+        <!-- clicking the names copies them, using core's copy button script -->
         <st:adjunct includes="lib.layout.copyButton.copyButton" />
         <h1 class="jp-test-header__title" data-message-insecure="${%copyInsecure}">
             <button type="button"
                     class="jenkins-copy-button jp-test-header__copy"
-                    text="${it.className}#${it.displayName}"
-                    tooltip="${%copy(it.className + '#' + it.displayName)}">
+                    text="${it.className}#${it.displayName}">
                 <span class="jp-test-header__class-name">${it.className}</span>
                 <span class="jp-test-header__name-row">
                     <span class="jp-test-header__name">${it.displayName}</span>
@@ -167,8 +167,8 @@ THE SOFTWARE.
             <st:include page="summary.jelly" from="${action}" optional="true" it="${action}" />
         </j:forEach>
 
-        <local:item id="${id}" name="error" title="${%Error Details}" value="${it.errorDetails}" />
-        <local:item id="${id}" name="skipmessage" title="${%Skip Message}" value="${it.skippedMessage}" />
+        <local:item id="${id}" name="error" wrap="${true}" title="${%Error Details}" value="${it.errorDetails}" />
+        <local:item id="${id}" name="skipmessage" wrap="${true}" title="${%Skip Message}" value="${it.skippedMessage}" />
         <j:forEach var="p" items="${it.displayedProperties}">
             <local:item id="${id}" name="${p.key}" title="${p.key}" value="${p.value}" link="${it.isUrlValue(p.value)}" />
         </j:forEach>
