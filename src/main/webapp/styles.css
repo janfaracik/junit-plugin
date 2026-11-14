@@ -457,8 +457,16 @@ h1 {
 .jp-test-panel__content {
   flex: 1;
   overflow-y: auto;
-  /* the header is as far from the top as the app bar of core's build page, so the two line up */
-  padding: 0.875rem var(--section-padding) var(--section-padding);
+  /* keeps the sticky header inside the panel's rounded corners */
+  border-radius: inherit;
+  /* the space above and below the header's contents: on desktop as far from the top as the app bar of core's build
+     page, so the two line up, and on mobile as far from the edges as from the sides */
+  --jp-header-inset: 0.875rem;
+  padding: var(--jp-header-inset) var(--section-padding) var(--section-padding);
+
+  @media (width < 740px) {
+    --jp-header-inset: var(--section-padding);
+  }
 }
 
 /* The test result's header: its status, its class and test names, and its buttons */
@@ -468,6 +476,23 @@ h1 {
   gap: 0.5rem;
   min-height: 2.5rem;
   margin-bottom: var(--section-padding);
+}
+
+/* In the panel, the header stays at the top while the test result scrolls under it. It reaches over the panel's padding
+   to its edges, so nothing shows around it, with the same space around its contents as before */
+.jp-test-panel__content .jp-test-header {
+  position: sticky;
+  /* sticks within the panel's padding, so this takes it back up to the panel's top edge */
+  top: calc(var(--jp-header-inset) * -1);
+  z-index: 1;
+  min-height: calc(2.5rem + var(--jp-header-inset) * 2);
+  margin:
+    calc(var(--jp-header-inset) * -1)
+    calc(var(--section-padding) * -1)
+    max(var(--section-padding) - var(--jp-header-inset), 0px);
+  padding: var(--jp-header-inset) var(--section-padding);
+  background: color-mix(in sRGB, var(--body-background-top) 95%, transparent);
+  backdrop-filter: saturate(2.5) blur(20px);
 }
 
 /* The test page's content is always as wide as its narrow main panel allows. On the new build page it's in a flex column,
