@@ -52,7 +52,7 @@
   }
 }
 
-/* On mobile, where core's jenkins-mobile-hide hides its label, it's square like the other icon only buttons */
+/* Square on mobile, where jenkins-mobile-hide hides the label */
 @media (max-width: 767px) {
   .jp-copy-prompt-button {
     width: 2.375rem;

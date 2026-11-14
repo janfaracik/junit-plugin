@@ -284,9 +284,8 @@ h1 {
   overflow-wrap: anywhere;
 }
 
-/* On mobile, where the test output scrolls sideways rather than wrapping, it fades out over 30px at either side that
-   there's more to scroll to, with nothing showing in the section padding's worth at the edge. Each fade comes and goes
-   over the first and last section padding's worth of scrolling, and neither is there when the output fits */
+/* On mobile, test output that scrolls sideways fades out over 30px at each edge with more to scroll to. The fades come
+   and go over the first and last section padding's worth of scrolling */
 @property --jp-fade-start {
   syntax: "<number>";
   inherits: false;
@@ -322,7 +321,7 @@ h1 {
 @media (width <= 800px) {
   @supports (animation-timeline: scroll()) {
     .jp-code-card pre {
-      /* the --jp-fade- properties are the opacity at each edge: 0 hides it, 1 shows it all, so there's no fade */
+      /* --jp-fade-start/end are the opacity at each edge, so 1 means no fade */
       mask-image: linear-gradient(
         to right,
         rgb(0 0 0 / var(--jp-fade-start)) var(--section-padding),
@@ -361,10 +360,9 @@ h1 {
   }
 }
 
-/* Test result panel, floating at the side of the page when a row of a test table is clicked */
+/* Test result panel, opened by clicking a test table row */
 .jp-test-panel {
-  /* Styled and animated like core's side panel on mobile, sliding in over the page from the right below the header,
-     with the rest of the page dimmed behind it */
+  /* Styled and animated like core's mobile side panel: it slides in below the header and dims the page behind it */
   position: fixed;
   top: var(--header-height, 3.5rem);
   right: 0;
@@ -382,16 +380,16 @@ h1 {
     translate var(--standard-transition),
     box-shadow var(--standard-transition),
     display var(--standard-transition) allow-discrete;
-  /* where it slides in from and back out to, which each layout below sets */
+  /* where it slides in from and out to, set per layout below */
   --jp-panel-offset: 100% 0;
-  /* the colour the page behind it is dimmed with, by a shadow spread across the whole screen */
+  /* the colour that dims the page, drawn as a shadow spread across the screen */
   --jp-scrim: transparent;
   translate: var(--jp-panel-offset);
   box-shadow:
     var(--elevation-3-box-shadow),
     0 0 0 100vmax var(--jp-scrim);
 
-  /* not displayed once it has slid out, which hides it from assistive technologies too */
+  /* hidden once it has slid out, from assistive technologies too */
   &:not(.jp-test-panel--open) {
     display: none;
   }
@@ -410,43 +408,40 @@ h1 {
     transition: none;
   }
 
-  /* On mobile, it's a sheet that fills the width of the screen and slides up from the bottom, leaving some of the page
-     showing above it, with rounded top corners */
+  /* On mobile, a full width sheet that slides up from the bottom */
   @media (width < 740px) {
     top: calc(2 * var(--header-height, 3.5rem));
     width: 100%;
-    /* as round as the top corners of the page on mobile, from --header-corner-radius in core, which is only set on its
-       header */
+    /* core's --header-corner-radius, which core only sets on its header */
     border-top-left-radius: 1.5rem;
     border-top-right-radius: 1.5rem;
-    /* just a top edge, in the white that core's overlay surfaces use for theirs */
+    /* a top edge only, in the white core's overlay surfaces use */
     border: none;
     border-top: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
     --jp-panel-offset: 0 100%;
   }
 
-  /* On larger screens, it fits inside core's page frame, with the frame's inset and its right corners rounded */
+  /* On larger screens, it fits inside core's page frame, matching its inset and right corners */
   @media (width >= 740px) {
     right: var(--page-inset, 0.3125rem);
     bottom: var(--page-inset, 0.3125rem);
     border-radius: 0 var(--form-input-border-radius, 0.6875rem) var(--form-input-border-radius, 0.6875rem) 0;
-    /* slides fully out of view, past the inset */
+    /* slides past the inset, fully out of view */
     --jp-panel-offset: calc(100% + var(--page-inset, 0.3125rem)) 0;
 
-    /* the new build page's bar of tabs stays visible, so only the bottom corner is rounded (the bar isn't sticky on
-       smaller screens, so it's covered there like the rest of the page) */
+    /* stays below the new build page's tab bar, which isn't sticky (so is covered) on smaller screens */
     &.jp-test-panel--below-build-bar {
       top: calc(2 * var(--header-height, 3.5rem) + var(--jenkins-border-width));
       border-top: none;
       border-top-right-radius: 0;
-      /* cuts the shadow that dims the page off at the panel's top edge, so the bar isn't dimmed either (it can't be
-         put above the panel, as core isolates the page body it's in) */
+      /* stops the dimming shadow at the panel's top, so the bar isn't dimmed. A z-index can't lift the bar above the
+         panel, as core isolates the page body */
       clip-path: inset(0 -100vmax -100vmax -100vmax);
     }
   }
 }
 
-/* Centred in the panel while a test result loads */
+/* Spinner, centred while a test result loads */
 .jp-test-panel__loading {
   display: flex;
   align-items: center;
@@ -457,10 +452,10 @@ h1 {
 .jp-test-panel__content {
   flex: 1;
   overflow-y: auto;
-  /* keeps the sticky header inside the panel's rounded corners */
+  /* clips the sticky header to the panel's rounded corners */
   border-radius: inherit;
-  /* the space above and below the header's contents: on desktop as far from the top as the app bar of core's build
-     page, so the two line up, and on mobile as far from the edges as from the sides */
+  /* space above and below the header's contents: on desktop it lines up with core's app bar, on mobile it matches the
+     sides */
   --jp-header-inset: 0.875rem;
   padding: var(--jp-header-inset) var(--section-padding) var(--section-padding);
 
@@ -469,7 +464,7 @@ h1 {
   }
 }
 
-/* The test result's header: its status, its class and test names, and its buttons */
+/* Test result header: status, class and test names, and buttons */
 .jp-test-header {
   display: flex;
   align-items: center;
@@ -478,11 +473,10 @@ h1 {
   margin-bottom: var(--section-padding);
 }
 
-/* In the panel, the header stays at the top while the test result scrolls under it. It reaches over the panel's padding
-   to its edges, so nothing shows around it, with the same space around its contents as before */
+/* In the panel, the header sticks to the top, stretched over the panel's padding so nothing shows around it */
 .jp-test-panel__content .jp-test-header {
   position: sticky;
-  /* sticks within the panel's padding, so this takes it back up to the panel's top edge */
+  /* sticky offsets start inside the padding, so this reaches the panel's top edge */
   top: calc(var(--jp-header-inset) * -1);
   z-index: 1;
   min-height: calc(2.5rem + var(--jp-header-inset) * 2);
@@ -495,13 +489,12 @@ h1 {
   backdrop-filter: saturate(2.5) blur(20px);
 }
 
-/* The test page's content is always as wide as its narrow main panel allows. On the new build page it's in a flex column,
-   where its centring margins would otherwise shrink it to fit, so it'd narrow as its sections are collapsed */
+/* Full width on the new build page, whose flex column would otherwise shrink it as sections collapse */
 .jp-test-page {
   width: 100%;
 }
 
-/* Spaced from the new build page's bar like core's app bars are there */
+/* Spaced below the new build page's tab bar like core's app bars */
 .app-build-content .jp-test-header {
   margin-top: 0.875rem;
 }
@@ -513,7 +506,7 @@ h1 {
   margin-right: 0.375rem;
 }
 
-/* The class name, with the test's name below it, each on one line and cut short if it doesn't fit */
+/* Class name above test name, each on one line with an ellipsis */
 .jp-test-header__title {
   display: flex;
   flex: 0 1 auto;
@@ -521,7 +514,7 @@ h1 {
   margin: 0;
 }
 
-/* The names, which copy themselves when clicked */
+/* The names, as a button that copies them */
 .jp-test-header__copy {
   display: flex;
   flex-direction: column;
@@ -544,7 +537,7 @@ h1 {
     max-width: 100%;
   }
 
-  /* only the icon changes once they're copied, rather than the names turning green too */
+  /* only the icon shows the copied state, not the names */
   &.jenkins-copy-button--copied {
     color: var(--text-color) !important;
   }
@@ -571,7 +564,7 @@ h1 {
   font-weight: 450;
 }
 
-/* The package is cut short long before the class's own name, which stays visible */
+/* The package is cut short before the class's own name */
 .jp-test-header__package {
   flex-shrink: 1000;
   min-width: 1.5em;
@@ -581,7 +574,7 @@ h1 {
   min-width: 0;
 }
 
-/* The test's name, with a small copy icon after it that stays visible when the name is cut short */
+/* Test name, with a copy icon that stays visible when the name is cut short */
 .jp-test-header__name-row {
   display: flex;
   align-items: center;
@@ -591,7 +584,7 @@ h1 {
   .jenkins-copy-button__icon {
     flex-shrink: 0;
     scale: 0.75;
-    /* centred on the middle of the name's lowercase letters, which most of it is, rather than its capitals */
+    /* centred on the lowercase letters rather than the capitals */
     translate: 0 1px;
     color: var(--text-color);
   }
@@ -601,13 +594,13 @@ h1 {
   font-size: 0.9375rem;
   font-weight: 550;
 
-  /* as small as the class name on mobile, so more of both fit */
+  /* as small as the class name on mobile */
   @media (width < 740px) {
     font-size: 0.75rem;
   }
 }
 
-/* The test result's buttons, on the right of the header */
+/* Header buttons */
 .jp-test-header__actions {
   display: flex;
   align-items: center;
@@ -616,24 +609,24 @@ h1 {
   margin-left: auto;
 }
 
-/* The test result's status, streak and duration, below its header */
+/* Status, streak and duration */
 .jp-test-details {
   margin-bottom: var(--section-padding);
 }
 
-/* Icon only buttons, as wide as they are tall */
+/* Square icon-only buttons */
 .jp-icon-button {
   width: 2.375rem;
   min-width: 2.375rem;
   padding: 0 !important;
 }
 
-/* Rows that show their test result in the panel when clicked, see failureSummary.js */
+/* Rows that open the panel, see failureSummary.js */
 tr.jp-test-row--linked {
   cursor: pointer;
 }
 
-/* The row whose test result is in the panel, highlighted in step with the panel opening and closing */
+/* The row shown in the panel, highlighted as the panel opens and closes */
 tr.jp-test-row--linked > td {
   transition: background var(--standard-transition);
 }

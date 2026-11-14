@@ -43,9 +43,8 @@ THE SOFTWARE.
                                 </div>
                             </j:when>
                             <j:otherwise>
-                                <!-- messages wrap, as they read like sentences with the important part often at the end; other output
-                                     keeps its lines, so on mobile it scrolls sideways -->
-                                <!-- every block has a language, even if it's none, so Prism styles them all alike -->
+                                <!-- messages always wrap, as the important part is often at the end. Every block has a language,
+                                     'none' if nothing else, so Prism styles them all alike -->
                                 <pre class="jdl-component-code__code ${wrap ? 'jp-code--wrap' : ''}">
                                     <code class="${it.isJavaStackTrace(value) ? 'language-javastacktrace' : 'language-none'}">
                                         ${value.trim()}
@@ -76,18 +75,17 @@ THE SOFTWARE.
         </d:tag>
     </d:taglib>
 
-    <!-- the page this is shown on loads prism, styles.css and core's copy button script: the test result's page (see
-         index.jelly), or the test report with the panel (see testPanel.jelly) -->
+    <!-- prism, styles.css and core's copy button script are loaded by the page around this, see index.jelly and
+         testPanel.jelly -->
     <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
 
     <div class="jp-test-header">
         <l:icon src="${it.iconFileName}" class="jp-test-header__icon" />
-        <!-- clicking the names copies them, using core's copy button script -->
+        <!-- clicking the names copies them -->
         <h1 class="jp-test-header__title" data-message-insecure="${%copyInsecure}">
             <button type="button"
                     class="jenkins-copy-button jp-test-header__copy"
                     text="${it.className}#${it.displayName}">
-                <!-- the package is cut short first, so the class's own name stays visible -->
                 <span class="jp-test-header__class-name">
                     <j:if test="${it.className.contains('.')}">
                         <span class="jp-test-header__package">${it.packageName}.</span>
@@ -96,7 +94,7 @@ THE SOFTWARE.
                 </span>
                 <span class="jp-test-header__name-row">
                     <span class="jp-test-header__name">${it.displayName}</span>
-                    <!-- core's copy icon, which turns into a tick once they're copied -->
+                    <!-- core's copy icon, which turns into a tick once copied -->
                     <span class="jenkins-copy-button__icon">
                         <l:icon src="symbol-check" />
                     </span>
@@ -113,8 +111,7 @@ THE SOFTWARE.
                 <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
             </a>
         </div>
-        <!-- closes the panel on the test report, which loads this through summary.jelly, where inTestPanel is set; see
-             failureSummary.js -->
+        <!-- in the panel, see summary.jelly and failureSummary.js -->
         <j:if test="${inTestPanel}">
             <button type="button" class="jenkins-button jp-icon-button jp-test-panel__close" tooltip="${%Close}">
                 <l:icon src="symbol-close-outline plugin-ionicons-api" />
@@ -153,7 +150,7 @@ THE SOFTWARE.
             </j:if>
         </div>
 
-        <!-- descriptions of live results would not be kept: they are replaced by the recorded results -->
+        <!-- descriptions of live results would be lost when the recorded results replace them -->
         <j:set var="describable" value="${it.parentAction.liveStatus == null}" />
         <j:if test="${describable}">
             <t:editDescriptionButton permission="${it.run.UPDATE}" compact="true" />

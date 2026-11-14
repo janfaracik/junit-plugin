@@ -30,11 +30,11 @@ THE SOFTWARE.
   </st:documentation>
 
   <st:once>
-    <!-- the test results shown in the panel have copy buttons, whose scripts don't run when they're loaded in -->
+    <!-- scripts in the test results loaded into the panel don't run, so the page loads the ones they need -->
     <st:adjunct includes="lib.layout.copyButton.copyButton" />
     <st:adjunct includes="lib.hudson.test.copyAsPromptButton.copyAsPromptButton" />
 
-    <!-- the new build page has a bar of tabs across the top of the page frame, that the panel stays below -->
+    <!-- the panel stays below the new build page's tab bar -->
     <l:userExperimentalFlag var="newBuildPage" flagClassName="jenkins.model.experimentalflags.NewBuildPageUserExperimentalFlag" />
 
     <!-- cloned by failureSummary.js the first time a row is clicked -->

@@ -32,7 +32,7 @@ THE SOFTWARE.
     <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
     <st:adjunct includes="lib.layout.copyButton.copyButton" />
 
-    <!-- l:run-subpage doesn't take a width for its main panel, so use core's narrow main panel class on the content -->
+    <!-- l:run-subpage has no width option, so core's narrow main panel class is used directly -->
     <div class="app-main-panel--narrow jp-test-page">
       <st:include page="test-output.jelly" it="${test}" />
     </div>

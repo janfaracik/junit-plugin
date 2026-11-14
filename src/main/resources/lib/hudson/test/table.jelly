@@ -45,7 +45,7 @@ THE SOFTWARE.
     </st:documentation>
 
     <d:taglib uri="local">
-        <!-- the test's status, name and class, whether or not the row links to its test result -->
+        <!-- the test's status, name and class, for rows with and without a link -->
         <d:tag name="rowContent">
             <l:icon src="${f.iconFileName}" />
 
