@@ -87,15 +87,11 @@ THE SOFTWARE.
 
     <div class="jp-test-header">
         <l:icon src="${it.iconFileName}" class="jp-test-header__icon" />
-        <!-- kept to one line, so the full name is in the title too -->
-        <h1 class="jp-test-header__title" title="${it.displayName} ${it.className}">
-            <span>${it.displayName}</span>
+        <!-- each line is kept to one line, so the full names are in the title too -->
+        <h1 class="jp-test-header__title" title="${it.className}#${it.displayName}">
             <span class="jp-test-header__class-name">${it.className}</span>
+            <span class="jp-test-header__name">${it.displayName}</span>
         </h1>
-        <l:copyButton text="${it.className}#${it.displayName}"
-                      clazz="squarecopy"
-                      iconOnly="true"
-                      tooltip="Copy ${it.className}#${it.displayName}" />
         <!-- the panel on the test report puts its own buttons here, see failureSummary.js -->
         <j:if test="${inTestPanel}">
             <div class="jp-test-panel__controls-slot" />
@@ -103,6 +99,10 @@ THE SOFTWARE.
     </div>
 
     <div class="jp-test-actions">
+        <l:copyButton text="${it.className}#${it.displayName}"
+                      clazz="squarecopy"
+                      iconOnly="true"
+                      tooltip="Copy ${it.className}#${it.displayName}" />
         <j:if test="${!empty copyAsPrompt}">
             <t:copyAsPromptButton text="${copyAsPrompt}" />
         </j:if>

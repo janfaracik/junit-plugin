@@ -330,6 +330,8 @@ h1 {
   backdrop-filter: contrast(1.1) saturate(2.5) blur(20px);
   border: none;
   border-left: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
+  /* follows the rounded top right corner of core's page frame, which reaches the edges of the screen on mobile */
+  border-top-right-radius: var(--form-input-border-radius, 0.6875rem);
   outline: none;
   transition:
     translate var(--standard-transition),
@@ -361,6 +363,35 @@ h1 {
 
   @media (prefers-reduced-motion) {
     transition: none;
+  }
+
+  /* On larger screens, it fits inside core's page frame, with the frame's inset and its right corners rounded */
+  @media (width >= 740px) {
+    right: var(--page-inset, 0.3125rem);
+    bottom: var(--page-inset, 0.3125rem);
+    border: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
+    border-radius: 0 var(--form-input-border-radius, 0.6875rem) var(--form-input-border-radius, 0.6875rem) 0;
+
+    /* slides fully out of view, past the inset */
+    &:not(.jp-test-panel--open) {
+      translate: calc(100% + var(--page-inset, 0.3125rem)) 0;
+    }
+
+    &.jp-test-panel--open {
+      @starting-style {
+        translate: calc(100% + var(--page-inset, 0.3125rem)) 0;
+      }
+    }
+
+    /* the new build page's bar of tabs stays visible, so only the bottom corner is rounded (the bar isn't sticky on
+       smaller screens, so it's covered there like the rest of the page) */
+    &.jp-test-panel--below-build-bar {
+      top: calc(2 * var(--header-height, 3.5rem));
+      border-top-right-radius: 0;
+      /* cuts the shadow that dims the page off at the panel's top edge, so the bar isn't dimmed either (it can't be
+         put above the panel, as core isolates the page body it's in) */
+      clip-path: inset(0 -100vmax -100vmax -100vmax);
+    }
   }
 }
 
@@ -398,26 +429,37 @@ h1 {
 
 .jp-test-header__icon {
   flex-shrink: 0;
-  width: 2rem !important;
-  height: 2rem !important;
-  margin-left: -0.1875rem;
+  width: 1.875rem !important;
+  height: 1.875rem !important;
   margin-right: 0.375rem;
 }
 
+/* The class name, with the test's name below it, each on one line and cut short if it doesn't fit */
 .jp-test-header__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
   flex: 0 1 auto;
   min-width: 0;
   margin: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 1.1875rem;
-  font-weight: 550;
+  line-height: 1.2;
+
+  > span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .jp-test-header__class-name {
-  margin-left: 0.5ch;
+  font-size: 0.75rem;
   color: var(--text-color-secondary);
+  font-weight: 450;
+}
+
+.jp-test-header__name {
+  font-size: 0.9375rem;
+  font-weight: 550;
 }
 
 .jp-test-header .squarecopy {

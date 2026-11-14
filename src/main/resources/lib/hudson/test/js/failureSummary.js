@@ -204,11 +204,7 @@ function loadSummary(element, query) {
  */
 function placeControls(content) {
     const slot = content.querySelector('.jp-test-panel__controls-slot');
-    if (slot) {
-        slot.append(panelControls);
-    } else {
-        panel.prepend(panelControls);
-    }
+    slot.append(panelControls);
 }
 
 function tryShowConfetti() {
