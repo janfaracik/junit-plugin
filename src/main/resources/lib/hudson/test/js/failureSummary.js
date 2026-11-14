@@ -97,9 +97,7 @@ function togglePanel(link) {
     const summaryUrl = new URL(`${id.replace(PREFIX, '')}summary`, document.URL).toString();
     loadSummary(content, summaryUrl);
 
-    opened.hidden = false;
-    // lay it out first, so it animates in rather than appearing
-    void opened.offsetWidth;
+    // slides in from its @starting-style, see styles.css
     opened.classList.add('jp-test-panel--open');
 }
 
@@ -110,8 +108,6 @@ function getPanel() {
 
     const template = document.getElementById('jp-test-panel-template');
     panel = template.content.firstElementChild.cloneNode(true);
-    // hidden until it's first opened, so it doesn't animate out when the page loads
-    panel.hidden = true;
     document.body.appendChild(panel);
     Behaviour.applySubtree(panel, true);
 
@@ -122,6 +118,18 @@ function getPanel() {
             closePanel();
         }
     });
+
+    // Like core's side panel, a click on the dimmed page behind it only closes it, apart from a click on another test
+    // row, which shows that test instead
+    document.addEventListener('click', (e) => {
+        if (!panel.classList.contains('jp-test-panel--open') || panel.contains(e.target) ||
+            e.target.closest('tr.jp-test-row--clickable')) {
+            return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        closePanel();
+    }, true);
     return panel;
 }
 

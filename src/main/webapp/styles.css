@@ -316,45 +316,52 @@ h1 {
 
 /* Test result panel, floating at the side of the page when a row of a test table is clicked */
 .jp-test-panel {
-  /* Docked to the right and bottom edges of core's page frame, so only its bottom right corner is rounded, like the
-     frame's */
+  /* Styled and animated like core's side panel on mobile, sliding in over the page from the right below the header,
+     with the rest of the page dimmed behind it */
   position: fixed;
-  top: calc(2 * var(--header-height, 3.5rem));
-  right: var(--page-inset, 0.3125rem);
-  bottom: var(--page-inset, 0.3125rem);
-  z-index: 10;
+  top: var(--header-height, 3.5rem);
+  right: 0;
+  bottom: 0;
+  z-index: 999;
   display: flex;
   flex-direction: column;
-  width: min(760px, calc(100vw - 2 * var(--page-inset, 0.3125rem)));
-  background: var(--overlay-surface-background, var(--background));
-  border: var(--jenkins-border);
-  border-radius: 0 0 var(--form-input-border-radius, 0.6875rem) 0;
-  box-shadow: var(--elevation-3-box-shadow, 0 0 2rem rgb(0 0 0 / 0.2));
+  width: min(760px, 85vw);
+  background-color: color-mix(in sRGB, var(--elevation-3-background) 85%, transparent);
+  backdrop-filter: contrast(1.1) saturate(2.5) blur(20px);
+  border: none;
+  border-left: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
   outline: none;
-  transition-property: opacity, translate, visibility;
-  /* decelerates both ways, so it moves as soon as it's opened or closed rather than lagging and then snapping */
-  transition-duration: 0.25s;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    translate var(--standard-transition),
+    box-shadow var(--standard-transition),
+    display var(--standard-transition) allow-discrete;
 
-  /* visibility hides it from assistive technologies too, once it has faded out */
+  /* not displayed once it has slid out, which hides it from assistive technologies too */
   &:not(.jp-test-panel--open) {
-    opacity: 0;
-    translate: 1rem 0;
-    visibility: hidden;
-    pointer-events: none;
-    /* and a little more quickly when closing, so it doesn't linger */
-    transition-duration: 0.2s;
+    display: none;
+    translate: 100% 0;
+    box-shadow:
+      var(--elevation-3-box-shadow),
+      0 0 0 100vmax transparent;
+  }
+
+  &.jp-test-panel--open {
+    translate: 0 0;
+    box-shadow:
+      var(--elevation-3-box-shadow),
+      0 0 0 100vmax color-mix(in sRGB, var(--background) 40%, transparent);
+
+    @starting-style {
+      translate: 100% 0;
+      box-shadow:
+        var(--elevation-3-box-shadow),
+        0 0 0 100vmax transparent;
+    }
   }
 
   @media (prefers-reduced-motion) {
     transition: none;
   }
-}
-
-/* Fills the height of the page frame, so its top right corner is rounded like the frame's too */
-.jp-test-panel--full-height {
-  top: var(--header-height, 3.5rem);
-  border-radius: 0 var(--form-input-border-radius, 0.6875rem) var(--form-input-border-radius, 0.6875rem) 0;
 }
 
 /* The panel's own buttons, at the top while a test result loads and then in its app bar */
@@ -430,10 +437,6 @@ h1 {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: calc(var(--section-padding) / 2);
-}
-
-.jp-test-panel[hidden] {
-  display: none;
 }
 
 tr.jp-test-row--clickable {
