@@ -320,7 +320,7 @@ h1 {
   z-index: 999;
   display: flex;
   flex-direction: column;
-  width: min(760px, 85vw);
+  width: min(85vw, max(760px, 60vw), 1200px);
   background-color: color-mix(in sRGB, var(--body-background-top) 95%, transparent);
   backdrop-filter: saturate(2.5) blur(20px);
   /*border: var(--jenkins-border);*/
