@@ -443,10 +443,8 @@ h1 {
     /* just a top edge, in the white that core's overlay surfaces use for theirs */
     border: none;
     border-top: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
-    /* casts its shadow up instead, over the page it slides up over */
-    --jp-test-panel-shadow:
-      0 -15px 40px -15px color-mix(in sRGB, var(--black) 15%, transparent),
-      0 -2px 8px -2px color-mix(in sRGB, var(--black) 7.5%, transparent);
+    /* core's elevation 3 shadow as it is, as it spans the screen */
+    --jp-test-panel-shadow: var(--elevation-3-box-shadow);
 
     &:not(.jp-test-panel--open) {
       translate: 0 100%;
