@@ -289,6 +289,63 @@ h1 {
   }
 }
 
+/* On mobile, where the test output scrolls sideways rather than wrapping, it fades out over 30px at either side that
+   there's more to scroll to, with nothing showing in the section padding's worth at the edge. Each fade comes and goes
+   over the first and last section padding's worth of scrolling, and neither is there when the output fits */
+@property --jp-fade-start {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --jp-fade-end {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@keyframes jp-fade-at-start {
+  from {
+    --jp-fade-start: 1;
+  }
+
+  to {
+    --jp-fade-start: 0;
+  }
+}
+
+@keyframes jp-fade-at-end {
+  from {
+    --jp-fade-end: 0;
+  }
+
+  to {
+    --jp-fade-end: 1;
+  }
+}
+
+@media (width <= 800px) {
+  @supports (animation-timeline: scroll()) {
+    .jp-code-card pre {
+      /* the --jp-fade- properties are the opacity at each edge: 0 hides it, 1 shows it all, so there's no fade */
+      mask-image: linear-gradient(
+        to right,
+        rgb(0 0 0 / var(--jp-fade-start)) var(--section-padding),
+        #000 calc(var(--section-padding) + 30px),
+        #000 calc(100% - var(--section-padding) - 30px),
+        rgb(0 0 0 / var(--jp-fade-end)) calc(100% - var(--section-padding))
+      );
+      animation:
+        jp-fade-at-start linear both,
+        jp-fade-at-end linear both;
+      animation-timeline: scroll(self inline), scroll(self inline);
+      animation-range:
+        0% var(--section-padding),
+        calc(100% - var(--section-padding)) 100%;
+    }
+  }
+}
+
 /* Tests card */
 .jenkins-card__teaser .jp-widget-line {
   display: flex;
@@ -375,7 +432,9 @@ h1 {
        header */
     border-top-left-radius: 1.5rem;
     border-top-right-radius: 1.5rem;
+    /* just a top edge, in the white that core's overlay surfaces use for theirs */
     border: none;
+    border-top: var(--jenkins-border-width) solid color-mix(in sRGB, var(--white) 10%, transparent);
     /* casts its shadow up instead, over the page it slides up over */
     --jp-test-panel-shadow:
       0 -15px 40px -15px color-mix(in sRGB, var(--black) 15%, transparent),
@@ -541,22 +600,12 @@ h1 {
   margin-left: auto;
 }
 
-/* On mobile, the buttons go on a row of their own below the names, which would otherwise have no room */
-@media (width < 740px) {
-  .jp-test-header {
-    flex-wrap: wrap;
-  }
-
-  .jp-test-header__title {
-    flex: 1 1 0;
-  }
-
-  .jp-test-header__actions {
-    /* after the panel's buttons, so they stay at the top right */
-    order: 1;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-left: 0;
+/* On mobile, where core's jenkins-mobile-hide hides its label, the Copy as prompt button is square like the other icon
+   only buttons */
+@media (max-width: 767px) {
+  .jenkins-copy-button:has(.jp-copy-prompt-button__label) {
+    width: 2.375rem;
+    padding: 0;
   }
 }
 

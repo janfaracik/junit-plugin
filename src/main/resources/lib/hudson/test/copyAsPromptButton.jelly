@@ -38,12 +38,13 @@ THE SOFTWARE.
     <button class="jenkins-button jenkins-copy-button"
             text="${attrs.text}"
             type="button"
+            aria-label="${%label}"
             data-tooltip-append-to-parent="true">
       <span class="jp-copy-prompt-button__icon">
         <l:icon src="symbol-sparkles-outline plugin-ionicons-api" class="jp-copy-prompt-button__idle" />
         <l:icon src="symbol-check" class="jp-copy-prompt-button__done" />
       </span>
-      ${%label}
+      <span class="jp-copy-prompt-button__label jenkins-mobile-hide">${%label}</span>
     </button>
   </span>
 
