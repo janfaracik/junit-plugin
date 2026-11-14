@@ -106,10 +106,6 @@ tr:focus-within .jp-test-link {
 }
 
 /* Custom table row */
-a.jp-table-row {
-  cursor: pointer;
-}
-
 .jp-table-row {
   display: flex;
   align-items: center;
@@ -165,10 +161,6 @@ a.jp-table-row {
 }
 
 .jp-code-card {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-
   details {
     summary {
       font-size: 14px;
@@ -392,27 +384,25 @@ h1 {
     display var(--standard-transition) allow-discrete;
   /* where it slides in from and back out to, which each layout below sets */
   --jp-panel-offset: 100% 0;
+  /* the colour the page behind it is dimmed with, by a shadow spread across the whole screen */
+  --jp-scrim: transparent;
+  translate: var(--jp-panel-offset);
+  box-shadow:
+    var(--elevation-3-box-shadow),
+    0 0 0 100vmax var(--jp-scrim);
 
   /* not displayed once it has slid out, which hides it from assistive technologies too */
   &:not(.jp-test-panel--open) {
     display: none;
-    translate: var(--jp-panel-offset);
-    box-shadow:
-      var(--elevation-3-box-shadow),
-      0 0 0 100vmax transparent;
   }
 
   &.jp-test-panel--open {
     translate: 0 0;
-    box-shadow:
-      var(--elevation-3-box-shadow),
-      0 0 0 100vmax color-mix(in sRGB, var(--background) 40%, transparent);
+    --jp-scrim: color-mix(in sRGB, var(--background) 40%, transparent);
 
     @starting-style {
       translate: var(--jp-panel-offset);
-      box-shadow:
-        var(--elevation-3-box-shadow),
-        0 0 0 100vmax transparent;
+      --jp-scrim: transparent;
     }
   }
 
@@ -535,8 +525,8 @@ h1 {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--focus-input-border, var(--accent-color));
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: var(--focus-ring--keyboard);
   }
 }
 
@@ -601,15 +591,6 @@ h1 {
   margin-left: auto;
 }
 
-/* On mobile, where core's jenkins-mobile-hide hides its label, the Copy as prompt button is square like the other icon
-   only buttons */
-@media (max-width: 767px) {
-  .jenkins-copy-button:has(.jp-copy-prompt-button__label) {
-    width: 2.375rem;
-    padding: 0;
-  }
-}
-
 /* The test result's status, streak and duration, below its header */
 .jp-test-details {
   margin-bottom: var(--section-padding);
@@ -622,12 +603,13 @@ h1 {
   padding: 0 !important;
 }
 
-tr[data-type="test-row"]:has([id$="-showlink"]) {
+/* Rows that show their test result in the panel when clicked, see failureSummary.js */
+tr.jp-test-row--linked {
   cursor: pointer;
 }
 
 /* The row whose test result is in the panel, highlighted in step with the panel opening and closing */
-tr[data-type="test-row"] > td {
+tr.jp-test-row--linked > td {
   transition: background var(--standard-transition);
 }
 

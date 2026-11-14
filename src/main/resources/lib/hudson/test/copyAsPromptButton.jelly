@@ -35,7 +35,7 @@ THE SOFTWARE.
 
   <!-- 'jenkins-copy-button' hooks into core's copy button behaviour, which marks the button as copied on success -->
   <span data-message-insecure="${%copyInsecure}">
-    <button class="jenkins-button jenkins-copy-button"
+    <button class="jenkins-button jenkins-copy-button jp-copy-prompt-button"
             text="${attrs.text}"
             type="button"
             aria-label="${%label}"

@@ -23,7 +23,7 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:local="local" xmlns:l="/lib/layout" xmlns:p="/prism" xmlns:t="/lib/hudson/test" xmlns:st="jelly:stapler">
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:local="local" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test" xmlns:st="jelly:stapler">
     <d:taglib uri="local">
         <d:tag name="item">
             <j:if test="${value!=null and !empty value}">
@@ -58,14 +58,7 @@ THE SOFTWARE.
         </d:tag>
         <d:tag name="streak">
             <div class="jenkins-details__item__icon">
-                <j:choose>
-                    <j:when test="${it.skipped}">
-                        <l:icon src="symbol-play-skip-forward-circle-outline plugin-ionicons-api" />
-                    </j:when>
-                    <j:otherwise>
-                        <l:icon src="symbol-close-circle-outline plugin-ionicons-api" />
-                    </j:otherwise>
-                </j:choose>
+                <l:icon src="${it.skipped ? 'symbol-play-skip-forward-circle-outline' : 'symbol-close-circle-outline'} plugin-ionicons-api" />
             </div>
 
             <j:choose>
@@ -82,15 +75,13 @@ THE SOFTWARE.
         </d:tag>
     </d:taglib>
 
-    <p:prism configuration="${it.prismConfiguration}" />
-    <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
-
+    <!-- the page this is shown on loads prism, styles.css and core's copy button script: the test result's page (see
+         index.jelly), or the test report with the panel (see testPanel.jelly) -->
     <j:set var="copyAsPrompt" value="${it.copyAsPrompt}" />
 
     <div class="jp-test-header">
         <l:icon src="${it.iconFileName}" class="jp-test-header__icon" />
         <!-- clicking the names copies them, using core's copy button script -->
-        <st:adjunct includes="lib.layout.copyButton.copyButton" />
         <h1 class="jp-test-header__title" data-message-insecure="${%copyInsecure}">
             <button type="button"
                     class="jenkins-copy-button jp-test-header__copy"
@@ -121,7 +112,8 @@ THE SOFTWARE.
                 <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
             </a>
         </div>
-        <!-- shown in the panel on the test report, which closes it, see failureSummary.js -->
+        <!-- closes the panel on the test report, which loads this through summary.jelly, where inTestPanel is set; see
+             failureSummary.js -->
         <j:if test="${inTestPanel}">
             <button type="button" class="jenkins-button jp-icon-button jp-test-panel__close" tooltip="${%Close}">
                 <l:icon src="symbol-close-outline plugin-ionicons-api" />
@@ -161,12 +153,13 @@ THE SOFTWARE.
         </div>
 
         <!-- descriptions of live results would not be kept: they are replaced by the recorded results -->
-        <j:if test="${it.parentAction.liveStatus == null}">
+        <j:set var="describable" value="${it.parentAction.liveStatus == null}" />
+        <j:if test="${describable}">
             <t:editDescriptionButton permission="${it.run.UPDATE}" compact="true" />
         </j:if>
     </div>
 
-    <j:if test="${it.parentAction.liveStatus == null}">
+    <j:if test="${describable}">
         <t:editableDescription permission="${it.run.UPDATE}" hideButton="true" />
     </j:if>
 
@@ -175,13 +168,13 @@ THE SOFTWARE.
             <st:include page="summary.jelly" from="${action}" optional="true" it="${action}" />
         </j:forEach>
 
-        <local:item id="${id}" name="error" wrap="${true}" title="${%Error Details}" value="${it.errorDetails}" />
-        <local:item id="${id}" name="skipmessage" wrap="${true}" title="${%Skip Message}" value="${it.skippedMessage}" />
+        <local:item wrap="${true}" title="${%Error Details}" value="${it.errorDetails}" />
+        <local:item wrap="${true}" title="${%Skip Message}" value="${it.skippedMessage}" />
         <j:forEach var="p" items="${it.displayedProperties}">
-            <local:item id="${id}" name="${p.key}" title="${p.key}" value="${p.value}" link="${it.isUrlValue(p.value)}" />
+            <local:item title="${p.key}" value="${p.value}" link="${it.isUrlValue(p.value)}" />
         </j:forEach>
-        <local:item id="${id}" name="stacktrace" title="${%Stack Trace}" value="${it.errorStackTrace}" />
-        <local:item id="${id}" name="stdout" title="${%Standard Output}" value="${it.stdout}" />
-        <local:item id="${id}" name="stderr" title="${%Standard Error}" value="${it.stderr}" />
+        <local:item title="${%Stack Trace}" value="${it.errorStackTrace}" />
+        <local:item title="${%Standard Output}" value="${it.stdout}" />
+        <local:item title="${%Standard Error}" value="${it.stderr}" />
     </div>
 </j:jelly>

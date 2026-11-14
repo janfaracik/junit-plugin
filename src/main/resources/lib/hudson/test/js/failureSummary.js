@@ -1,4 +1,3 @@
-const PREFIX = "test-";
 const CACHE = {};
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * The link to the test result of the test table row that the target is in, if any
  */
 function testLinkFor(target) {
-    return target.closest('tr[data-type="test-row"]')?.querySelector('[id$="-showlink"]');
+    return target.closest('tr.jp-test-row--linked')?.querySelector('a.jp-table-row');
 }
 
 // One listener for every test table row, including those in sections loaded later: clicking a test's link, or anywhere
@@ -24,7 +23,7 @@ document.addEventListener('click', (e) => {
 
     // Let the browser handle modifier clicks, e.g. ctrl/cmd-click to open in a new tab, and leave text being selected
     if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey ||
-        (!control && window.getSelection().toString())) {
+        (!control && !window.getSelection().isCollapsed)) {
         return;
     }
 
@@ -48,13 +47,7 @@ function initializeLazySections() {
             }
             details.dataset.loaded = 'true';
             const content = details.querySelector('.jp-lazy-content');
-            fetch(details.dataset.lazyUrl)
-                .then(rsp => {
-                    if (!rsp.ok || rsp.redirected) {
-                        throw new Error(rsp.statusText);
-                    }
-                    return rsp.text();
-                })
+            fetchHtml(details.dataset.lazyUrl)
                 .then(html => {
                     // e.g. a login page after the session expired, rather than the table
                     const template = document.createElement('template');
@@ -74,6 +67,19 @@ function initializeLazySections() {
     });
 }
 
+/**
+ * Fetches a fragment of a page, failing if it doesn't come back, e.g. if the session expired and it was redirected to
+ * the login page
+ */
+function fetchHtml(url) {
+    return fetch(url).then(rsp => {
+        if (!rsp.ok || rsp.redirected) {
+            throw new Error(rsp.statusText);
+        }
+        return rsp.text();
+    });
+}
+
 let panel = null;
 let activeLink = null;
 
@@ -87,16 +93,14 @@ function togglePanel(link) {
         return;
     }
 
-    const opened = getPanel();
+    getPanel();
     setActiveLink(link);
 
-    const content = opened.querySelector('.jp-test-panel__content');
-    const id = link.id.replace(/-showlink$/, '');
-    const summaryUrl = new URL(`${id.replace(PREFIX, '')}summary`, document.URL).toString();
-    loadSummary(content, summaryUrl);
+    // the link goes to the test result's page, whose summary is the test result without the page around it
+    loadSummary(panel.querySelector('.jp-test-panel__content'), new URL('summary', link.href).toString());
 
     // slides in from its @starting-style, see styles.css
-    opened.classList.add('jp-test-panel--open');
+    panel.classList.add('jp-test-panel--open');
 }
 
 function getPanel() {
@@ -107,7 +111,6 @@ function getPanel() {
     const template = document.getElementById('jp-test-panel-template');
     panel = template.content.firstElementChild.cloneNode(true);
     document.body.appendChild(panel);
-    Behaviour.applySubtree(panel, true);
 
     // the close button is in the header of each test result shown, see test-output.jelly
     panel.addEventListener('click', (e) => {
@@ -163,9 +166,7 @@ function loadSummary(element, query) {
         }
         element.innerHTML = CACHE[query];
         element.scrollTop = 0;
-        element.querySelectorAll("code").forEach(code => {
-            Prism.highlightElement(code);
-        });
+        Prism.highlightAllUnder(element);
         Behaviour.applySubtree(element, true);
     }
 
@@ -177,13 +178,7 @@ function loadSummary(element, query) {
 
     // while it loads, or if it fails to, the panel can still be closed with Escape or by clicking outside of it
     element.innerHTML = '<div class="jp-test-panel__loading"><span class="jenkins-spinner"></span></div>';
-    fetch(query)
-        .then(rsp => {
-            if (!rsp.ok) {
-                throw new Error(rsp.statusText);
-            }
-            return rsp.text();
-        })
+    fetchHtml(query)
         .then(html => {
             CACHE[query] = html;
             setInnerHTML();

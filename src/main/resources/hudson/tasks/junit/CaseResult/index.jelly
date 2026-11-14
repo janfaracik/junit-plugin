@@ -23,11 +23,15 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:p="/prism">
   <j:set var="test" value="${it}" />
   <j:set var="it" value="${it.parentAction}" />
 
   <l:run-subpage>
+    <p:prism configuration="${test.prismConfiguration}" />
+    <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
+    <st:adjunct includes="lib.layout.copyButton.copyButton" />
+
     <!-- l:run-subpage doesn't take a width for its main panel, so use core's narrow main panel class on the content -->
     <div class="app-main-panel--narrow jp-test-page">
       <st:include page="test-output.jelly" it="${test}" />

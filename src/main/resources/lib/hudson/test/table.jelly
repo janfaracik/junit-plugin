@@ -23,7 +23,7 @@ THE SOFTWARE.
 -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson/test" xmlns:d="jelly:define" xmlns:local="local">
     <st:documentation>
         <st:attribute name="items">
             The tests to display inside of this table.
@@ -43,6 +43,23 @@ THE SOFTWARE.
             (e.g. the per-class "All Tests" table) so the class name isn't repeated on every row.
         </st:attribute>
     </st:documentation>
+
+    <d:taglib uri="local">
+        <!-- the test's status, name and class, whether or not the row links to its test result -->
+        <d:tag name="rowContent">
+            <l:icon src="${f.iconFileName}" />
+
+            ${f.displayName}
+
+            <j:if test="${showClassName}">
+                <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2" style="font-family: var(--font-family-mono)">
+                    <st:out value="${f.className}" />
+                </span>
+            </j:if>
+
+            <t:condition-tag test="${f}" clazz="jenkins-!-margin-left-2 jenkins-mobile-hide" />
+        </d:tag>
+    </d:taglib>
 
     <st:once>
         <link rel="stylesheet" href="${resURL}/plugin/junit/styles.css" defer="true" />
@@ -64,41 +81,23 @@ THE SOFTWARE.
             </tr>
         </thead>
         <j:forEach var="f" items="${attrs.items}" varStatus="i">
-            <tr data-type="test-row">
+            <!-- skipped tests without a message have no test result worth showing -->
+            <j:set var="linked" value="${!(f.status == 'SKIPPED' and f.skippedMessage == null || f.skippedMessage.isEmpty())}" />
+            <tr data-type="test-row" class="${linked ? 'jp-test-row--linked' : null}">
                 <td data="${f.className}.${f.name}">
                     <j:set var="url" value="${attrs.baseUrl}${f.getRelativePathFrom(attrs.relativeParent ?: it)}" />
                     <j:set var="id" value="${h.htmlAttributeEscape(url)}" />
 
                     <j:choose>
-                        <j:when test="${f.status == 'SKIPPED' and f.skippedMessage == null || f.skippedMessage.isEmpty()}">
-                            <div class="jp-table-row">
-                                <l:icon src="${f.iconFileName}" />
-
-                                ${f.displayName}
-
-                                <j:if test="${showClassName}">
-                                    <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2" style="font-family: var(--font-family-mono)">
-                                        <st:out value="${f.className}" />
-                                    </span>
-                                </j:if>
-
-                                <t:condition-tag test="${f}" clazz="jenkins-!-margin-left-2 jenkins-mobile-hide" />
-                            </div>
+                        <j:when test="${linked}">
+                            <a id="test-${id}-showlink" class="jp-table-row" href="${url}">
+                                <local:rowContent />
+                            </a>
                         </j:when>
                         <j:otherwise>
-                            <a id="test-${id}-showlink" class="jp-table-row" href="${url}">
-                                <l:icon src="${f.iconFileName}" />
-
-                                ${f.displayName}
-
-                                <j:if test="${showClassName}">
-                                    <span class="jenkins-!-text-color-secondary jenkins-!-margin-left-2" style="font-family: var(--font-family-mono)">
-                                        <st:out value="${f.className}" />
-                                    </span>
-                                </j:if>
-
-                                <t:condition-tag test="${f}" clazz="jenkins-!-margin-left-2 jenkins-mobile-hide" />
-                            </a>
+                            <div class="jp-table-row">
+                                <local:rowContent />
+                            </div>
                         </j:otherwise>
                     </j:choose>
 
