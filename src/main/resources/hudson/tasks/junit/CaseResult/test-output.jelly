@@ -95,7 +95,13 @@ THE SOFTWARE.
             <button type="button"
                     class="jenkins-copy-button jp-test-header__copy"
                     text="${it.className}#${it.displayName}">
-                <span class="jp-test-header__class-name">${it.className}</span>
+                <!-- the package is cut short first, so the class's own name stays visible -->
+                <span class="jp-test-header__class-name">
+                    <j:if test="${it.className.contains('.')}">
+                        <span class="jp-test-header__package">${it.packageName}.</span>
+                    </j:if>
+                    <span class="jp-test-header__simple-name">${it.simpleName}</span>
+                </span>
                 <span class="jp-test-header__name-row">
                     <span class="jp-test-header__name">${it.displayName}</span>
                     <!-- core's copy icon, which turns into a tick once they're copied -->

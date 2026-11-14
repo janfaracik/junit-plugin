@@ -552,29 +552,6 @@ h1 {
     max-width: 100%;
   }
 
-  .jp-test-header__class-name,
-  /* The test's name, with a small copy icon after it that stays visible when the name is cut short */
-.jp-test-header__name-row {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  min-width: 0;
-
-  .jenkins-copy-button__icon {
-    flex-shrink: 0;
-    scale: 0.75;
-    /* centred on the middle of the name's lowercase letters, which most of it is, rather than its capitals */
-    translate: 0 1px;
-    color: var(--text-color-secondary);
-  }
-}
-
-.jp-test-header__name {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
   /* only the icon changes once they're copied, rather than the names turning green too */
   &.jenkins-copy-button--copied {
     color: var(--text-color) !important;
@@ -586,15 +563,56 @@ h1 {
   }
 }
 
+.jp-test-header__package,
+.jp-test-header__simple-name,
+.jp-test-header__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .jp-test-header__class-name {
+  display: flex;
+  min-width: 0;
   font-size: 0.75rem;
   color: var(--text-color-secondary);
   font-weight: 450;
 }
 
+/* The package is cut short long before the class's own name, which stays visible */
+.jp-test-header__package {
+  flex-shrink: 1000;
+  min-width: 1.5em;
+}
+
+.jp-test-header__simple-name {
+  min-width: 0;
+}
+
+/* The test's name, with a small copy icon after it that stays visible when the name is cut short */
+.jp-test-header__name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+
+  .jenkins-copy-button__icon {
+    flex-shrink: 0;
+    scale: 0.75;
+    /* centred on the middle of the name's lowercase letters, which most of it is, rather than its capitals */
+    translate: 0 1px;
+    color: var(--text-color);
+  }
+}
+
 .jp-test-header__name {
   font-size: 0.9375rem;
   font-weight: 550;
+
+  /* as small as the class name on mobile, so more of both fit */
+  @media (width < 740px) {
+    font-size: 0.75rem;
+  }
 }
 
 /* The test result's buttons, on the right of the header */
