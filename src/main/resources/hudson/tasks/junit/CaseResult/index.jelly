@@ -29,7 +29,7 @@ THE SOFTWARE.
 
   <l:run-subpage>
     <!-- l:run-subpage doesn't take a width for its main panel, so use core's narrow main panel class on the content -->
-    <div class="app-main-panel--narrow">
+    <div class="app-main-panel--narrow jp-test-page">
       <st:include page="test-output.jelly" it="${test}" />
     </div>
   </l:run-subpage>

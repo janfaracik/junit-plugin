@@ -514,6 +514,17 @@ h1 {
   margin-bottom: var(--section-padding);
 }
 
+/* The test page's content is always as wide as its narrow main panel allows. On the new build page it's in a flex column,
+   where its centring margins would otherwise shrink it to fit, so it'd narrow as its sections are collapsed */
+.jp-test-page {
+  width: 100%;
+}
+
+/* Spaced from the new build page's bar like core's app bars are there */
+.app-build-content .jp-test-header {
+  margin-top: 0.875rem;
+}
+
 .jp-test-header__icon {
   flex-shrink: 0;
   width: 1.875rem !important;
