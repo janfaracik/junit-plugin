@@ -75,8 +75,6 @@ function initializeLazySections() {
 }
 
 let panel = null;
-// The panel's own buttons, which move into each test result's header once it has loaded
-let panelControls = null;
 let activeLink = null;
 
 /**
@@ -111,8 +109,12 @@ function getPanel() {
     document.body.appendChild(panel);
     Behaviour.applySubtree(panel, true);
 
-    panelControls = panel.querySelector('.jp-test-panel__controls');
-    panel.querySelector('.jp-test-panel__close').addEventListener('click', closePanel);
+    // the close button is in the header of each test result shown, see test-output.jelly
+    panel.addEventListener('click', (e) => {
+        if (e.target.closest('.jp-test-panel__close')) {
+            closePanel();
+        }
+    });
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && panel.classList.contains('jp-test-panel--open')) {
             closePanel();
@@ -160,7 +162,6 @@ function loadSummary(element, query) {
             return;
         }
         element.innerHTML = CACHE[query];
-        placeControls(element);
         element.scrollTop = 0;
         element.querySelectorAll("code").forEach(code => {
             Prism.highlightElement(code);
@@ -174,8 +175,8 @@ function loadSummary(element, query) {
         return;
     }
 
+    // while it loads, or if it fails to, the panel can still be closed with Escape or by clicking outside of it
     element.innerHTML = '<div class="jp-test-panel__loading"><span class="jenkins-spinner"></span></div>';
-    placeControls(element);
     fetch(query)
         .then(rsp => {
             if (!rsp.ok) {
@@ -190,23 +191,8 @@ function loadSummary(element, query) {
         .catch(() => {
             if (element.dataset.query === query) {
                 element.textContent = panel.dataset.errorText;
-                placeControls(element);
             }
         });
-}
-
-/**
- * Puts the panel's buttons in the test result's header, or leaves them out while there's no test result to show
- */
-function placeControls(content) {
-    const slot = content.querySelector('.jp-test-panel__controls-slot');
-    // there's no header while a test result loads, or if it fails to, when the panel can still be closed with
-    // Escape or by clicking outside of it
-    if (slot) {
-        slot.append(panelControls);
-    } else {
-        panelControls.remove();
-    }
 }
 
 function tryShowConfetti() {

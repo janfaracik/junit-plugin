@@ -456,23 +456,12 @@ h1 {
   }
 }
 
-/* The panel's own buttons, which go in the header of each test result it shows */
-.jp-test-panel__controls {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.25rem;
-}
-
 /* Centred in the panel while a test result loads */
 .jp-test-panel__loading {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100%;
-}
-
-.jp-test-panel__controls-slot {
-  flex-shrink: 0;
 }
 
 .jp-test-panel__content {

@@ -121,9 +121,11 @@ THE SOFTWARE.
                 <l:icon src="symbol-bar-chart-outline plugin-ionicons-api" />
             </a>
         </div>
-        <!-- the panel on the test report puts its own buttons here, at the top right, see failureSummary.js -->
+        <!-- shown in the panel on the test report, which closes it, see failureSummary.js -->
         <j:if test="${inTestPanel}">
-            <div class="jp-test-panel__controls-slot" />
+            <button type="button" class="jenkins-button jp-icon-button jp-test-panel__close" tooltip="${%Close}">
+                <l:icon src="symbol-close-outline plugin-ionicons-api" />
+            </button>
         </j:if>
     </div>
 

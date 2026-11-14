@@ -40,12 +40,6 @@ THE SOFTWARE.
     <!-- cloned by failureSummary.js the first time a row is clicked -->
     <template id="jp-test-panel-template">
       <aside class="jp-test-panel ${newBuildPage ? 'jp-test-panel--below-build-bar' : ''}" aria-label="${%Test result}" tabindex="-1" data-error-text="${%loadFailed}">
-        <!-- moved into the header of each test result once it has loaded, see failureSummary.js -->
-        <div class="jp-test-panel__controls">
-          <button type="button" class="jenkins-button jp-icon-button jp-test-panel__close" tooltip="${%Close}">
-            <l:icon src="symbol-close-outline plugin-ionicons-api" />
-          </button>
-        </div>
         <div class="jp-test-panel__content" />
       </aside>
     </template>
